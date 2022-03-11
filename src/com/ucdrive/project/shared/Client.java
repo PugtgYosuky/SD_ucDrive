@@ -1,4 +1,4 @@
-package com.ucdrive.server.client;
+package com.ucdrive.project.shared;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +15,7 @@ public class Client implements Serializable {
     private Date dateCC;
 
     public Client(String username, String password, String department,
-        String college, String address, String phoneNumber, String numberCC, Date dateCC) {
+                  String college, String address, String phoneNumber, String numberCC, Date dateCC) {
         this.username = username;
         this.password = password;
         this.department = department;
