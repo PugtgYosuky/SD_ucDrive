@@ -3,7 +3,7 @@ package com.ucdrive.project.shared;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Client implements Serializable {
+public class User implements Serializable {
 
     private String username;
     private String password;
@@ -14,10 +14,10 @@ public class Client implements Serializable {
     private String numberCC;
     private Date dateCC;
 
-    public Client(String username, String password, String department,
+    public User(String username, String password, String department,
                   String college, String address, String phoneNumber, String numberCC, Date dateCC) {
         this.username = username;
-        this.password = password;
+        setPassword(password);
         this.department = department;
         this.college = college;
         this.address = address;
@@ -37,14 +37,14 @@ public class Client implements Serializable {
     public String getPassword() {
         StringBuilder decypher = new StringBuilder();
         for(char c : password.toCharArray())
-            decypher.append(c-6);
+            decypher.append((char) (c-6));
         return decypher.toString();
     }
 
     public void setPassword(String password) {
         StringBuilder cypher = new StringBuilder();
         for(char c : password.toCharArray())
-            cypher.append(c+6);
+            cypher.append((char) (c+6));
         this.password = cypher.toString();
     }
 
@@ -98,7 +98,7 @@ public class Client implements Serializable {
 
     @Override
     public String toString() {
-        return username;
+        return username + " | " + password + " | " + department + "  | " + college + "  | " + address + " | " + phoneNumber + " | " + numberCC + " | " + dateCC.toString();
     }
 
 }
