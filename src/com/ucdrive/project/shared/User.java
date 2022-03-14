@@ -1,6 +1,7 @@
 package com.ucdrive.project.shared;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class User implements Serializable {
@@ -13,17 +14,20 @@ public class User implements Serializable {
     private String phoneNumber;
     private String numberCC;
     private Date dateCC;
+    private String path;
 
     public User(String username, String password, String department,
-                  String college, String address, String phoneNumber, String numberCC, Date dateCC) {
+                  String college, String address, String phoneNumber, String numberCC, Date dateCC, String path) {
         this.username = username;
-        setPassword(password);
+        this.password = password;
         this.department = department;
         this.college = college;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.numberCC = numberCC;
         this.dateCC = dateCC;
+        this.path = path;
+
     }
 
     public String getUsername() {
@@ -35,17 +39,17 @@ public class User implements Serializable {
     }
 
     public String getPassword() {
-        StringBuilder decypher = new StringBuilder();
+        /*StringBuilder decypher = new StringBuilder();
         for(char c : password.toCharArray())
-            decypher.append((char) (c-6));
-        return decypher.toString();
+            decypher.append((char) (c-6));*/
+        return this.password;
     }
 
     public void setPassword(String password) {
-        StringBuilder cypher = new StringBuilder();
+        /*StringBuilder cypher = new StringBuilder();
         for(char c : password.toCharArray())
-            cypher.append((char) (c+6));
-        this.password = cypher.toString();
+            cypher.append((char) (c+6));*/
+        this.password = password;
     }
 
     public String getDepartment() {
@@ -96,9 +100,17 @@ public class User implements Serializable {
         this.dateCC = dateCC;
     }
 
+    public String getPath() {
+        return path;
+    }
+    
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     public String toString() {
-        return username + " | " + password + " | " + department + "  | " + college + "  | " + address + " | " + phoneNumber + " | " + numberCC + " | " + dateCC.toString();
+        return username + ";" + password + ";" + department + ";" + college + ";" + address + ";" + phoneNumber + ";" + numberCC + ";" + new SimpleDateFormat("dd/mm/yyyy").format(dateCC) + ";" + path;
     }
 
 }

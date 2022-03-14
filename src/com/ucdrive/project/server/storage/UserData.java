@@ -29,7 +29,7 @@ public class UserData {
             while((line = bufferedReader.readLine()) != null && line.length() > 0) {;  
                 data = line.split(";");
                 try {
-                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7])));
+                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7]), data[8]));
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
