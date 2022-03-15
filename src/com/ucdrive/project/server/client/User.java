@@ -1,6 +1,5 @@
 package com.ucdrive.project.server.client;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -44,7 +43,7 @@ public class User implements Serializable {
         try {
             Files.createDirectories(Paths.get(getAbsolutePath()));
         } catch (IOException e) {
-            // The path already exsists
+            // The path already exists
         }
     }
 
