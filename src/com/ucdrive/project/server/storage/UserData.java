@@ -11,7 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
-import com.ucdrive.project.shared.User;
+import com.ucdrive.project.server.client.User;
 
 public class UserData {
     
@@ -20,16 +20,15 @@ public class UserData {
 
     public UserData(String path) {
         this.users = new Vector<>();
-        this.path = path;
-
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+        this.path = path + "/config/accounts.txt";
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.path))) {
             String line;
             String[] data;
 
             while((line = bufferedReader.readLine()) != null && line.length() > 0) {;  
                 data = line.split(";");
                 try {
-                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7]), data[8]));
+                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7]), data[8], path));
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -40,6 +39,7 @@ public class UserData {
         } catch(IOException exc) {
             exc.printStackTrace();
         }
+
     }
 
     public User findUser(String username) {

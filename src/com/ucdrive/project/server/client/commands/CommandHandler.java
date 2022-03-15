@@ -2,8 +2,10 @@ package com.ucdrive.project.server.client.commands;
 
 import java.io.IOException;
 
-public interface CommandHandler {
+public abstract class CommandHandler {
 
-    public CommandAction parse(Command command) throws IOException;
+    public static CommandExecutor commandExecutor;
+
+    public abstract CommandAction parse(Command command) throws IOException;
 
 }

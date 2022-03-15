@@ -1,6 +1,10 @@
-package com.ucdrive.project.shared;
+package com.ucdrive.project.server.client;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,9 +19,10 @@ public class User implements Serializable {
     private String numberCC;
     private Date dateCC;
     private String path;
+    private String diskPath;
 
     public User(String username, String password, String department,
-                  String college, String address, String phoneNumber, String numberCC, Date dateCC, String path) {
+                  String college, String address, String phoneNumber, String numberCC, Date dateCC, String path, String diskPath) {
         this.username = username;
         this.password = password;
         this.department = department;
@@ -27,7 +32,20 @@ public class User implements Serializable {
         this.numberCC = numberCC;
         this.dateCC = dateCC;
         this.path = path;
+        this.diskPath = diskPath;
+        this.ensurePath();
+    }
+    
+    public String getAbsolutePath() {
+        return this.diskPath + "/disk/users/" + username + this.path;
+    }
 
+    private void ensurePath() {
+        try {
+            Files.createDirectories(Paths.get(getAbsolutePath()));
+        } catch (IOException e) {
+            // The path already exsists
+        }
     }
 
     public String getUsername() {
@@ -108,6 +126,13 @@ public class User implements Serializable {
         this.path = path;
     }
 
+    public String getDiskPath() {
+        return this.diskPath;
+    }
+
+    public void setDiskPath(String diskPath){
+        this.diskPath = diskPath;
+    }
     @Override
     public String toString() {
         return username + ";" + password + ";" + department + ";" + college + ";" + address + ";" + phoneNumber + ";" + numberCC + ";" + new SimpleDateFormat("dd/mm/yyyy").format(dateCC) + ";" + path;

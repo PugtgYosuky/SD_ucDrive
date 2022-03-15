@@ -30,4 +30,8 @@ public class Command {
         return this.args[pos];
     }
 
+    public int getArgsLength() {
+        return this.args.length;
+    }
+
 }

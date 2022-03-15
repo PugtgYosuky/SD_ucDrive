@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.ucdrive.project.server.client.ClientThread;
+import com.ucdrive.project.server.client.commands.CommandExecutor;
+import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.storage.UserData;
 
 public class ServerTCP extends Thread {
@@ -17,6 +19,7 @@ public class ServerTCP extends Thread {
     private Vector<ClientThread> clients;
     private ThreadPoolExecutor pool;
     private UserData userData;
+    private CommandExecutor commandExecutor;
     
     public ServerTCP(int serverPort, String ip, int maxThreads, String path) {
         this.serverPort = serverPort;
@@ -24,6 +27,12 @@ public class ServerTCP extends Thread {
         clients = new Vector<>();
         userData = new UserData(path);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
+        try {
+            this.commandExecutor = new CommandExecutor();
+            CommandHandler.commandExecutor = this.commandExecutor;
+        } catch(Exception exc) {
+            exc.printStackTrace();
+        }
     }
 
     private void acceptClients(ServerSocket server) throws IOException {
@@ -32,7 +41,7 @@ public class ServerTCP extends Thread {
             Socket socket = server.accept();
             // !!! PODERAO NAO FICAR À ESPERA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             pool.submit(() -> {
-                ClientThread clientThread = new ClientThread(socket, userData);
+                ClientThread clientThread = new ClientThread(socket, userData, commandExecutor);
 
                 clients.add(clientThread);
                 clientThread.start();

@@ -3,7 +3,11 @@ package com.ucdrive.project.server.client.commands;
 public enum CommandAction {
 
 
-    SUCCESS("Success"), CLOSE_CONNECTION("Close connection");
+    SUCCESS("Success"),
+    CLOSE_CONNECTION("Close connection"),
+    NOT_FOUND("Command not found"),
+    INVALID_USAGE("Invalid usage"),
+    ERROR("Error");
 
     private String string;
 

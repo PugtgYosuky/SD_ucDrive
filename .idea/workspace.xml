@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="3691979c-f7db-4dc1-b85e-10fd061b4a62" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/shared/Client.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandDescription.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandExecutor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdHelp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/files/config/accounts.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/files/disk/users/username1/home/bruh.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/com.ucdrive.server/client/Client.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/ServerTCP.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/ServerTCP.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/ClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/ClientThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandAction.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangePassword.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangePassword.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/config/accounts.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/storage/UserData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/storage/UserData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/shared/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/ServerTCP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/ServerTCP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/ClientThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangePassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangePassword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/config/accounts.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/storage/UserData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/storage/UserData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/shared/User.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +66,49 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager" selected="Application.Server">
+    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ucdrive.project.client.Client" />
+      <module name="SD_ucDrive" />
+      <option name="PROGRAM_PARAMETERS" value="localhost 7000" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ucdrive.project.client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ucdrive.project.server.Server" />
+      <module name="SD_ucDrive" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ucdrive.project.server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Client" />
+      <item itemvalue="Application.Server" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Client" />
+        <item itemvalue="Application.Server" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -55,6 +119,9 @@
       <option name="presentableId" value="Default" />
       <updated>1646995664655</updated>
       <workItem from="1646995666461" duration="681000" />
+      <workItem from="1647274103746" duration="26000" />
+      <workItem from="1647346589771" duration="1344000" />
+      <workItem from="1647366361789" duration="2956000" />
     </task>
     <servers />
   </component>
