@@ -6,7 +6,7 @@ import com.ucdrive.project.server.client.commands.*;
 import java.io.File;
 import java.io.IOException;
 
-@CommandDescription(prefix="mkdir", description="Create a new directory")
+@CommandDescription(prefix="server-mkdir", description="Create a new directory")
 public class CmdMakeDirectory extends CommandHandler {
 
     @Override

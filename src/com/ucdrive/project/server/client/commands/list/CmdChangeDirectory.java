@@ -10,7 +10,7 @@ import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 
-@CommandDescription(prefix="cd", description="Change current directory")
+@CommandDescription(prefix="server-cd", description="Change current directory")
 public class CmdChangeDirectory extends CommandHandler{
 
 	@Override

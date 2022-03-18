@@ -8,7 +8,7 @@ import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 
-@CommandDescription(prefix="help", description="List all the commands available")
+@CommandDescription(prefix="server-help", description="List all the commands available")
 public class CmdHelp extends CommandHandler {
 
     @Override

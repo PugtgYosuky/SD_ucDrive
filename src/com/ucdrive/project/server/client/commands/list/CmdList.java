@@ -10,7 +10,7 @@ import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 
-@CommandDescription(prefix="ls", description="List file in the current directory")
+@CommandDescription(prefix="server-ls", description="List file in the current directory")
 public class CmdList extends CommandHandler {
 
 	@Override

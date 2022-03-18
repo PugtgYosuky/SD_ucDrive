@@ -1,39 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="SD_ucDrive:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3691979c-f7db-4dc1-b85e-10fd061b4a62" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandDescription.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandExecutor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdHelp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/files/config/accounts.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/files/disk/users/username1/home/bruh.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/Server.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/ServerTCP.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/ServerTCP.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/ClientThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/ClientThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandAction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandAction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/CommandHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangePassword.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangePassword.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/config/accounts.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/storage/UserData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/storage/UserData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/shared/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/ServerTCP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/ServerTCP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/ClientThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/ClientThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/Command.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandAction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/CommandHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangePassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangePassword.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/config/accounts.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/storage/UserData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/storage/UserData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/shared/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/client/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/client/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdHelp.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdHelp.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdList.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdList.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/files/config/accounts.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/SD_ucDrive/com/ucdrive/project/server/files/config/accounts.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/client/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/client/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdChangeDirectory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdHelp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdHelp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/ucdrive/project/server/client/commands/list/CmdMakeDirectory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,8 +61,11 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.Client">
     <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ucdrive.project.client.Client" />
       <module name="SD_ucDrive" />
@@ -122,6 +116,10 @@
       <workItem from="1647274103746" duration="26000" />
       <workItem from="1647346589771" duration="1344000" />
       <workItem from="1647366361789" duration="2956000" />
+      <workItem from="1647372349686" duration="596000" />
+      <workItem from="1647595373361" duration="3916000" />
+      <workItem from="1647605379224" duration="515000" />
+      <workItem from="1647620876967" duration="605000" />
     </task>
     <servers />
   </component>
