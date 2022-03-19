@@ -17,15 +17,11 @@ public class ClientThread {
     private UserData userData;
     private CommandExecutor commandExecutor;
     
-    public ClientThread(Socket socket, UserData userData, CommandExecutor commandExecutor) {
+    public ClientThread(Socket socket, UserData userData, CommandExecutor commandExecutor) throws IOException {
         this.socket = socket;
         this.userData = userData;
-        try {
-            inputStream = new DataInputStream(socket.getInputStream());
-            outputStream = new DataOutputStream(socket.getOutputStream());
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+        inputStream = new DataInputStream(socket.getInputStream());
+        outputStream = new DataOutputStream(socket.getOutputStream());
         this.commandExecutor = commandExecutor;
     }
 

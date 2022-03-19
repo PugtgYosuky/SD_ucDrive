@@ -41,7 +41,12 @@ public class ServerTCP extends Thread {
             Socket socket = server.accept();
             // !!! PODERAO NAO FICAR À ESPERA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             pool.submit(() -> {
-                ClientThread clientThread = new ClientThread(socket, userData, commandExecutor);
+                ClientThread clientThread;
+                try {
+                    clientThread = new ClientThread(socket, userData, commandExecutor);
+                } catch (IOException e) {
+                    return;
+                }
 
                 clients.add(clientThread);
                 clientThread.start();
@@ -53,7 +58,7 @@ public class ServerTCP extends Thread {
                 }
             });
         }
-    }    
+    }
 
     @Override
     public void run() {
