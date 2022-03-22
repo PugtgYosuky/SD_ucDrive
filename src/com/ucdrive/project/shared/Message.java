@@ -1,5 +1,7 @@
 package com.ucdrive.project.shared;
 
+import com.ucdrive.project.client.response.ResponseHandler;
+
 public class Message implements Response {
 
     private String message;
@@ -8,9 +10,13 @@ public class Message implements Response {
         this.message = message;
     }
 
+    public String getMessage() {
+        return this.message;
+    }
+
 	@Override
-	public void execute() {
-        System.out.println(message);
+	public void execute(ResponseHandler response) {
+        response.execute(this);
 	}
     
 }

@@ -18,6 +18,8 @@ public class UserData {
     private Vector<User> users;
     private String path;
 
+
+    // Initializing the users Vector and the path.
     public UserData(String path) {
         this.users = new Vector<>();
         this.path = path + "/config/accounts.txt";
@@ -42,6 +44,12 @@ public class UserData {
 
     }
 
+    /**
+     * Find a user by their username
+     * 
+     * @param username The username of the user you want to find.
+     * @return Nothing.
+     */
     public User findUser(String username) {
         for(User user : users){
             if(username.equalsIgnoreCase(user.getUsername()))
@@ -50,6 +58,9 @@ public class UserData {
         return null;
     }
 
+    /**
+     * Save the users to a file
+     */
     public synchronized void saveUsers() {
 
         try (PrintWriter bufferedWriter = new PrintWriter(new BufferedWriter(new FileWriter(path)))) {
