@@ -12,14 +12,19 @@ import com.ucdrive.project.server.ftp.RequestDispatcher;
 public class ServerFTP extends Thread{
 
     private int serverPort;
-    private RequestDispatcher requests;
+    private static RequestDispatcher requests;
     private ThreadPoolExecutor pool;
     
     public ServerFTP(int serverPort, int maxThreads) {
         this.serverPort = serverPort;
-        this.requests = new RequestDispatcher();
+        if(requests == null)
+            requests = new RequestDispatcher();
         this.pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
         this.start();
+    }
+
+    public static RequestDispatcher getRequestDispatcher() {
+        return requests;
     }
 
     public void acceptRequests(ServerSocket server) throws IOException {
