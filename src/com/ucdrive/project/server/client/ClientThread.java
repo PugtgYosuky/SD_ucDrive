@@ -8,6 +8,7 @@ import com.ucdrive.project.server.client.commands.Command;
 import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.storage.UserData;
 import com.ucdrive.project.shared.Message;
+import com.ucdrive.project.shared.Response;
 
 public class ClientThread {
 
@@ -61,6 +62,10 @@ public class ClientThread {
 
     public void sendMessage(String message) throws IOException {
         this.outputStream.writeObject(new Message(message));
+    }
+
+    public void sendResponse(Response res) throws IOException {
+        this.outputStream.writeObject(res);
     }
 
     public void start() {

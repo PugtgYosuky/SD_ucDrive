@@ -29,7 +29,9 @@ public class CmdDownload extends CommandHandler {
         if(file.exists()){
             RequestFile requestFile = new RequestFile(user, filePath, RequestType.DOWNLOAD);
             ServerFTP.getRequestDispatcher().addRequest(requestFile);
-            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, 7001, RequestType.DOWNLOAD, ));
+            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.DOWNLOAD, ServerFTP.getIp()));
+            clientThread.sendMessage("Download concluded");
+            return CommandAction.SUCCESS;
         }
         
         clientThread.sendMessage("File not found");
