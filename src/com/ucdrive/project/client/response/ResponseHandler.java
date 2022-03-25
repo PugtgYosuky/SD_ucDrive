@@ -1,14 +1,11 @@
 package com.ucdrive.project.client.response;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import javax.xml.crypto.Data;
 
 import com.ucdrive.project.client.Client;
 import com.ucdrive.project.server.ftp.RequestType;
@@ -37,6 +34,7 @@ public class ResponseHandler {
                 outputStream.write(bytes, 0, read);
             }
             
+            fileData.close();
             return true;
         } catch(IOException exc) {
             exc.printStackTrace();
@@ -54,6 +52,8 @@ public class ResponseHandler {
             while((read = inputStream.read(bytes)) != -1) {
                 fileData.write(bytes, 0, read);
             }
+
+            fileData.close();
             return true;
         } catch(IOException exc) {
             exc.printStackTrace();
@@ -63,11 +63,10 @@ public class ResponseHandler {
     }
 
     public void execute(Transfer transfer) {
-
-        try {
-            Socket socket = new Socket(transfer.getIp(), transfer.getPort());
+        
+        try (Socket socket = new Socket(transfer.getIp(), transfer.getPort());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
 
             outputStream.writeUTF(transfer.getId());
             if(inputStream.readBoolean()){
@@ -76,6 +75,9 @@ public class ResponseHandler {
                 else
                     downloadFile(transfer, outputStream, inputStream);
             }
+
+            outputStream.close();
+            inputStream.close();
 
         } catch (IOException e) {
             e.printStackTrace();

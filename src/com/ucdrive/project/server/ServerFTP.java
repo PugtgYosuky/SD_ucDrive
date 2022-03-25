@@ -63,7 +63,7 @@ public class ServerFTP extends Thread{
     public void run() {
         try (ServerSocket server = new ServerSocket(serverPort)) {
             ip = server.getInetAddress();
-            port = serverPort;
+            port = server.getLocalPort();
             acceptRequests(server);
         } catch(IOException exc) {
             exc.printStackTrace();

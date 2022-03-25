@@ -1,6 +1,7 @@
 package com.ucdrive.project.server;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -15,13 +16,13 @@ import com.ucdrive.project.server.storage.UserData;
 public class ServerTCP extends Thread {
     
     private int serverPort;
-    private String ip;
+    private InetAddress ip;
     private Vector<ClientThread> clients;
     private ThreadPoolExecutor pool;
     private UserData userData;
     private CommandExecutor commandExecutor;
     
-    public ServerTCP(int serverPort, String ip, int maxThreads, String path) {
+    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path) {
         this.serverPort = serverPort;
         this.ip = ip;
         clients = new Vector<>();

@@ -35,7 +35,7 @@ public class DataThread {
             while((read = fileData.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
-            
+            fileData.close();
             return true;
         } catch(IOException exc) {
             return false;
@@ -49,7 +49,7 @@ public class DataThread {
             while((read = inputStream.read(bytes)) != -1) {
                 fileData.write(bytes, 0, read);
             }
-            
+            fileData.close();
             return true;
         } catch(IOException exc) {
             return false;
@@ -64,18 +64,25 @@ public class DataThread {
                 return;
             }
             outputStream.writeBoolean(true);
+
+            boolean transferState;
+            if(requestFile.getType() == RequestType.UPLOAD)
+                transferState = uploadFile(requestFile);
+            else
+                transferState = downloadFile(requestFile);
+            
+            if(transferState)
+                requests.removeRequest(requestFile.getUniqueID());
         } catch (IOException e) {
             return;
+        }finally {
+            try {
+                outputStream.close();
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
-
-        boolean transferState;
-        if(requestFile.getType() == RequestType.UPLOAD)
-            transferState = uploadFile(requestFile);
-        else
-            transferState = downloadFile(requestFile);
-        
-        if(transferState)
-            requests.removeRequest(requestFile.getUniqueID());
     }
     
 }

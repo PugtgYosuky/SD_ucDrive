@@ -23,11 +23,11 @@ public class Client {
         ResponseHandler responseHandler = new ResponseHandler(client);
 
         try (Scanner scanner = new Scanner(System.in)) {
-            try (Socket server = new Socket(args[0], Integer.parseInt(args[1]))) {
+            try (Socket server = new Socket(args[0], Integer.parseInt(args[1]));
+                ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
+                DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());) {
                 System.out.println("Connected");
 
-                ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
-                DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());
                 CommandExecutor commandExecutor = new CommandExecutor(client, outputStream);
                 CommandHandler.commandExecutor = commandExecutor;
 
