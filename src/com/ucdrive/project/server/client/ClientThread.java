@@ -36,6 +36,11 @@ public class ClientThread {
         return this.client;
     }
 
+    /**
+     * It checks if the user is in the database and if the password is correct.
+     * 
+     * @return Nothing.
+     */
     public boolean authenticate() throws IOException {
         String s;
         // TODO: ADD A TIMEOUT
@@ -68,6 +73,9 @@ public class ClientThread {
         this.outputStream.writeObject(res);
     }
 
+    /**
+     * Reads a command from the client, executes it, and sends a response back to the client
+     */
     public void start() {
 
         try {

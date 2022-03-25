@@ -36,6 +36,11 @@ public class ServerTCP extends Thread {
         }
     }
 
+    /**
+     * Accepts clients and creates a new thread for each client
+     * 
+     * @param server The server socket that will be used to accept connections.
+     */
     private void acceptClients(ServerSocket server) throws IOException {
         System.out.println("Server TCP started in " + ip + " with port: " + serverPort);
         while(true) {

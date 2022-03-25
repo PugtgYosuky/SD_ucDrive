@@ -1,13 +1,14 @@
 package com.ucdrive.project.server;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class Server {
 
     private boolean primaryServer;
     private int heartbeats;
-    private long timeout;
+    private int timeout;
     private InetAddress myIp;
     private InetAddress otherIp;
     private int myTCPPort;
@@ -15,7 +16,7 @@ public class Server {
     private int otherUDPPort;
     private String storagePath;
 
-    public Server(int heartbeats, long timeout, String myIp, String otherIp, int myTCPPort, int myUDPPort, int otherUDPPort, String storagePath) throws UnknownHostException{
+    public Server(int heartbeats, int timeout, String myIp, String otherIp, int myTCPPort, int myUDPPort, int otherUDPPort, String storagePath) throws UnknownHostException{
         this.primaryServer = false;
         this.heartbeats = heartbeats;
         this.timeout = timeout;
@@ -28,17 +29,26 @@ public class Server {
     }
 
     public void start() {
-        ServerUDP serverUDP = new ServerUDP(myIp, myTCPPort, otherIp, otherUDPPort);
-        serverUDP.start();
+        ServerUDP serverUDP;
+		try {
+			serverUDP = new ServerUDP(this);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+            return;
+		}
+        
         while(!primaryServer) {
             primaryServer = serverUDP.isPrimary();
+            System.out.println("Primary Server: " + primaryServer);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        
+        serverUDP.start();
+        System.out.println("Primary server");
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath);
         ServerFTP serverFTP = new ServerFTP(0, 10);
         serverTCP.start();
@@ -85,11 +95,11 @@ public class Server {
         this.heartbeats = heartbeats;
     }
 
-    public long getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(long timeout) {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
@@ -135,7 +145,7 @@ public class Server {
 
             String storagePath = args[5];
             int heartbeats = Integer.parseInt(args[6]);
-            long timeout = Long.parseLong(args[7]);
+            int timeout = Integer.parseInt(args[7]);
         
             try {
                 Server server = new Server(heartbeats, timeout, ip, otherIp, portTCP, portUDP, otherPort, storagePath);
