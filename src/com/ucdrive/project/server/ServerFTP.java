@@ -35,7 +35,7 @@ public class ServerFTP extends Thread{
             pool.submit(() -> {
                 DataThread dataThread;
                 try {
-                    dataThread = new DataThread(socket, this.requests);
+                    dataThread = new DataThread(socket, requests);
                 } catch (IOException e) {
                     return;
                 }

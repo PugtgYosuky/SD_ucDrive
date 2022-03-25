@@ -1,5 +1,10 @@
 package com.ucdrive.project.server;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -14,9 +19,14 @@ public class Server {
     private int myTCPPort;
     private int myUDPPort;
     private int otherUDPPort;
+    private int synchronizePort;
+    private int otherSynchronizePort;
     private String storagePath;
 
-    public Server(int heartbeats, int timeout, String myIp, String otherIp, int myTCPPort, int myUDPPort, int otherUDPPort, String storagePath) throws UnknownHostException{
+    public Server(int heartbeats, int timeout, String myIp, String otherIp, int myTCPPort,
+                 int myUDPPort, int otherUDPPort, int synchronizePort, int otherSynchronizePort,
+                 String storagePath) throws UnknownHostException{
+
         this.primaryServer = false;
         this.heartbeats = heartbeats;
         this.timeout = timeout;
@@ -25,6 +35,8 @@ public class Server {
         this.myTCPPort = myTCPPort;
         this.myUDPPort = myUDPPort;
         this.otherUDPPort = otherUDPPort;
+        this.synchronizePort = synchronizePort;
+        this.otherSynchronizePort = synchronizePort;
         this.storagePath = storagePath;
     }
 
@@ -38,26 +50,17 @@ public class Server {
             return;
 		}
         
-        while(!primaryServer) {
-            primaryServer = serverUDP.isPrimary();
-            System.out.println("Primary Server: " + primaryServer);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        primaryServer = serverUDP.isPrimary();
         serverUDP.start();
-        System.out.println("Primary server");
+
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath);
         ServerFTP serverFTP = new ServerFTP(0, 10);
         serverTCP.start();
         serverFTP.start();
-
         try {
+            serverUDP.join();
             serverTCP.join();
             serverFTP.join();
-            serverUDP.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -85,6 +88,22 @@ public class Server {
 
     public void setOtherUDPPort(int otherUDPPort) {
         this.otherUDPPort = otherUDPPort;
+    }
+    
+    public int getSynchronizePort() {
+        return synchronizePort;
+    }
+
+    public void setSynchronizePort(int synchronizePort) {
+        this.synchronizePort = synchronizePort;
+    }
+
+    public int getOtherSynchronizePort() {
+        return otherSynchronizePort;
+    }
+    
+    public void setOtherSynchronizePort(int otherSynchronizePort) {
+        this.otherSynchronizePort = otherSynchronizePort;
     }
     
     public int getHeartbeats() {
@@ -137,27 +156,46 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            String ip = args[0];
-            int portTCP = Integer.parseInt(args[1]);
-            int portUDP = Integer.parseInt(args[2]);
-            String otherIp = args[3];
-            int otherPort = Integer.parseInt(args[4]);
+            String configFile = args[0];
 
-            String storagePath = args[5];
-            int heartbeats = Integer.parseInt(args[6]);
-            int timeout = Integer.parseInt(args[7]);
-        
-            try {
-                Server server = new Server(heartbeats, timeout, ip, otherIp, portTCP, portUDP, otherPort, storagePath);
+            File file = new File(configFile);
+
+            if(file.exists()) {
+                BufferedReader buffer = new BufferedReader(new FileReader(file));
                 
-                server.start();
-            } catch(UnknownHostException exc) {
-                exc.printStackTrace();
+                String[] line = buffer.readLine().split(" ");
+
+                String ip = line[0];
+                int portTCP = Integer.parseInt(line[1]);
+                int portUDP = Integer.parseInt(line[2]);
+                String otherIp = line[3];
+                int otherUDPPort = Integer.parseInt(line[4]);
+                int synchronizePort = Integer.parseInt(line[5]);
+                int otherSynchronizePort = Integer.parseInt(line[6]);
+
+                String storagePath = line[8];
+                int heartbeats = Integer.parseInt(line[8]);
+                int timeout = Integer.parseInt(line[9]);
+                
+                try {
+                    Server server = new Server(heartbeats, timeout, ip, otherIp, portTCP, portUDP, otherUDPPort, synchronizePort, otherSynchronizePort, storagePath);
+                    server.start();
+                } catch(UnknownHostException exc) {
+                    exc.printStackTrace();
+                }
+
+            } else {
+                System.out.println("Invalid config file");
             }
+            
         } catch(IndexOutOfBoundsException exc) {
             System.out.println("Invalid number of arguments...");
         } catch(NumberFormatException exc) {
             System.out.println("Error trying to parse numbers...");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch(IOException exc) {
+            exc.printStackTrace();
         }
     }
 }
