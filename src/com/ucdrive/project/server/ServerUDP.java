@@ -21,7 +21,7 @@ public class ServerUDP extends Thread{
         this.socket.setSoTimeout(server.getTimeout());
     }
 
-    public boolean isPrimary() {
+    private boolean isPrimary() {
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         DataOutputStream outputStream = new DataOutputStream(byteOutputStream);
         try {
@@ -42,7 +42,7 @@ public class ServerUDP extends Thread{
                 socket.receive(packetResponse);
                 return false;
             }catch(SocketTimeoutException exc){
-                    System.out.println("Timeout (" + (i+1) + "/" + server.getHeartbeats() + ")");
+                System.out.println("Timeout (" + (i+1) + "/" + server.getHeartbeats() + ")");
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -58,11 +58,10 @@ public class ServerUDP extends Thread{
         return true;
     }
 
-    @Override
-    public void run() {
+    private void receivePings() {
         while(true) {
             try {
-                byte buf[] = new byte[1024];
+                byte[] buf = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf, 0, packet.getLength());
@@ -72,7 +71,7 @@ public class ServerUDP extends Thread{
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 DataOutputStream outputStream = new DataOutputStream(byteArrayOutputStream);
                 outputStream.writeBoolean(response);
-                byte resp[] = byteArrayOutputStream.toByteArray();
+                byte[] resp = byteArrayOutputStream.toByteArray();
                 DatagramPacket res = new DatagramPacket(resp, resp.length, packet.getAddress(), packet.getPort());
                 socket.send(res);
             } catch(SocketTimeoutException exc) {
@@ -81,6 +80,60 @@ public class ServerUDP extends Thread{
                 System.out.println("Exception");
                 return;
             }
+        }
+    }
+
+    private void sendPings() {
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        DataOutputStream outputStream = new DataOutputStream(byteOutputStream);
+        try {
+            outputStream.writeBoolean(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte [] buffer = byteOutputStream.toByteArray();
+
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, server.getOtherIp(), server.getOtherUDPPort());
+        int failOvers = 0;
+        while(failOvers < server.getHeartbeats()) {
+            try {
+                socket.send(packet);
+                byte [] bufferResponse = new byte[buffer.length + 1];
+                DatagramPacket packetResponse = new DatagramPacket(bufferResponse, bufferResponse.length);
+
+                socket.receive(packetResponse);
+                failOvers = 0;
+            }catch(SocketTimeoutException exc){
+                failOvers++;
+                System.out.println("Timeout (" + (failOvers) + "/" + server.getHeartbeats() + ")");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            /*try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+        }
+    }
+
+    @Override
+    public void run() {
+        if(isPrimary()) {
+            server.setPrimaryServer(true);
+            synchronized(this) {
+                this.notifyAll();
+            }
+            receivePings();
+        } else {
+            System.out.println("here :-)");
+            server.setPrimaryServer(false);
+            sendPings();
+            server.setPrimaryServer(true);
+            synchronized(this) {
+                this.notifyAll();
+            }
+            receivePings();
         }
     }
 

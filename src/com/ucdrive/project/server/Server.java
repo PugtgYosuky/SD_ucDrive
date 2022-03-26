@@ -49,9 +49,16 @@ public class Server {
 			e1.printStackTrace();
             return;
 		}
-        
-        primaryServer = serverUDP.isPrimary();
         serverUDP.start();
+
+        try {
+            synchronized (serverUDP) {
+                serverUDP.wait();
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath);
         ServerFTP serverFTP = new ServerFTP(0, 10);
@@ -122,11 +129,11 @@ public class Server {
         this.timeout = timeout;
     }
 
-    public boolean primaryServer(){
+    public synchronized boolean getPrimaryServer(){
         return this.primaryServer;
     }
 
-    public void setPrimaryServer(boolean primaryServer) {
+    public synchronized void setPrimaryServer(boolean primaryServer) {
         this.primaryServer = primaryServer;
     }
 
@@ -173,7 +180,7 @@ public class Server {
                 int synchronizePort = Integer.parseInt(line[5]);
                 int otherSynchronizePort = Integer.parseInt(line[6]);
 
-                String storagePath = line[8];
+                String storagePath = line[7];
                 int heartbeats = Integer.parseInt(line[8]);
                 int timeout = Integer.parseInt(line[9]);
                 
@@ -192,8 +199,8 @@ public class Server {
             System.out.println("Invalid number of arguments...");
         } catch(NumberFormatException exc) {
             System.out.println("Error trying to parse numbers...");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException exc) {
+            exc.printStackTrace();
         } catch(IOException exc) {
             exc.printStackTrace();
         }

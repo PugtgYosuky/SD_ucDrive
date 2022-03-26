@@ -1,3 +1,4 @@
-1 ---------------------------------------------
-Ao dar upload de uma pasta zip para o servidor, apenas é possivel abri-la após desligar o cliente
-
+- abrir ficheiro do lado do cliente logo após ter feito o upload
+- abrir os dois servidores ao mesmo tempo --> assumem os dois que são secundários e não conseguem sair desse ciclo
+- abrir os dois servidores, desligar o primário e verificar se o outro fica com o lugar de primário
+- ter o cliente conectado ao servidor principal, desligar esse servidor e verificar se ele se reconecta ao secundário

@@ -1,3 +1,0 @@
-1 ---------------------------------------------
-Ao dar upload de uma pasta zip para o servidor, apenas é possivel abri-la após desligar o cliente
-
