@@ -123,15 +123,23 @@ public class ServerUDP extends Thread{
 
     @Override
     public void run() {
-        if(isPrimary()) {
-            server.setPrimaryServer(true);
+        boolean primaryServer = isPrimary();
+        server.setPrimaryServer(primaryServer);
+        try {
+            UDPSynchronized synchronizedThread = new UDPSynchronized(this.server, this.fileDispatcher);
+            synchronizedThread.start();
+        } catch (SocketException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return;
+        }
+        if(primaryServer) {
             synchronized(this) {
                 this.notifyAll();
             }
             receivePings();
         } else {
-            System.out.println("here :-)");
-            server.setPrimaryServer(false);
+            System.out.println("here :)");
             sendPings();
             server.setPrimaryServer(true);
             synchronized(this) {

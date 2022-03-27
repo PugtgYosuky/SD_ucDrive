@@ -16,7 +16,11 @@ public class FileDispatcher {
     }
     
     public SyncFile getFile() {
-        return this.queue.poll();
+        return this.queue.peek();
+    }
+
+    public void removeFile() {
+        this.queue.remove();
     }
 
 }

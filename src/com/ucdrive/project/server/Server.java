@@ -38,7 +38,7 @@ public class Server {
         this.myUDPPort = myUDPPort;
         this.otherUDPPort = otherUDPPort;
         this.synchronizePort = synchronizePort;
-        this.otherSynchronizePort = synchronizePort;
+        this.otherSynchronizePort = otherSynchronizePort;
         this.storagePath = storagePath;
     }
 
