@@ -70,7 +70,6 @@ public class UDPSynchronized extends Thread{
                 filePacket.setIndex(i);
                 filePacket.setBuffer(bytes);
                 filePacket.setBufferLength(read);
-                outputStream.flush();
                 outputStream.writeObject(filePacket);
                 byte [] buffer = byteOutputStream.toByteArray();
                 packet = new DatagramPacket(buffer, buffer.length, server.getOtherIp(), server.getOtherSynchronizePort());
@@ -95,8 +94,8 @@ public class UDPSynchronized extends Thread{
                     return false;
                 }
 
-                byteOutputStream.reset();
-                outputStream.reset();
+                byteOutputStream = new ByteArrayOutputStream();
+                outputStream = new ObjectOutputStream(byteOutputStream);
                 i++;
             }
             fileData.close();
@@ -113,6 +112,7 @@ public class UDPSynchronized extends Thread{
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOutputStream);
+            outputStream.flush();
             FilePacket filePacket = new FilePacket(1, 1, file.getPath(), false);
             int failOvers = 0;
             outputStream.writeObject(filePacket);
@@ -162,7 +162,7 @@ public class UDPSynchronized extends Thread{
         int currentIndex = 0;
         while(true){
             try {
-                byte [] buffer = new byte [1000000];
+                byte [] buffer = new byte [10000];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer, 0, packet.getLength());
@@ -172,7 +172,7 @@ public class UDPSynchronized extends Thread{
 
                 System.out.println(filePacket.getIndex() + " " + filePacket.getTotalPackets());
                 
-                socket.send(new DatagramPacket(new byte[1], 1, server.getOtherIp(), server.getOtherSynchronizePort()));
+                socket.send(new DatagramPacket(new byte[1024], 10, server.getOtherIp(), server.getOtherSynchronizePort()));
                 if(!filePacket.getIsBinaryFile()) {
                     new File(server.getStoragePath() + "/disk/users/" + filePacket.getPath()).mkdir();
                     continue;
@@ -196,6 +196,7 @@ public class UDPSynchronized extends Thread{
             } catch(SocketTimeoutException exc) {
                 // Verificar estado do server
             } catch (IOException exc) {
+                exc.printStackTrace();
                 System.out.println("Exception");
             } catch (ClassNotFoundException e) {
                 // TODO Auto-generated catch block
