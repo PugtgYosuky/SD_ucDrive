@@ -23,11 +23,14 @@ public class ClientThread {
     public ClientThread(Socket socket, UserData userData, CommandExecutor commandExecutor) throws IOException {
         this.socket = socket;
         this.userData = userData;
-        inputStream = new DataInputStream(socket.getInputStream());
-        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        inputStream = new DataInputStream(this.socket.getInputStream());
+        outputStream = new ObjectOutputStream(this.socket.getOutputStream());
         this.commandExecutor = commandExecutor;
     }
 
+    /**
+     * Save the user data to a file
+     */
     public void saveUsers() {
         this.userData.saveUsers();
     }
@@ -54,11 +57,20 @@ public class ClientThread {
             return false;
         }
 
+        if(client.getIsConnected()) {
+            sendMessage("This user is already connected");
+            client = null;
+            return false;
+        }
+
         sendMessage("Password: ");
         s = inputStream.readUTF();
 
         if(s.equals(client.getPassword())) {
             sendMessage("You are now connected! :)");
+
+            client.setIsConnected(true);
+
             return true;
         }
         sendMessage("Wrong password. Server is closing for you :(");

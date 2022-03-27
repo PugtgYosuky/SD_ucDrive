@@ -13,10 +13,13 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
+
 public class CommandExecutor {
 
     private Map<String, Function<Command, CommandAction>> commands;
     private Set<CommandDescription> commandDescriptions;
+    private FileDispatcher fileDispatcher;
 
     /**
      * Get all the classes in a package
@@ -46,8 +49,9 @@ public class CommandExecutor {
     }
 
     // Initializing the command executor.
-    public CommandExecutor() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public CommandExecutor(FileDispatcher fileDispatcher) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         this.commands = new HashMap<>();
+        this.fileDispatcher = fileDispatcher;
         this.commandDescriptions = new TreeSet<>(Comparator.comparing(CommandDescription::prefix));
 
         for(Class<?> c : getPackageClasses("com.ucdrive.project.server.client.commands.list")) {
@@ -66,6 +70,10 @@ public class CommandExecutor {
                 });
             }
         }
+    }
+
+    public FileDispatcher getFileDispatcher() {
+        return fileDispatcher;
     }
 
     /**

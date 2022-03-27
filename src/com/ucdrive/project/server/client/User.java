@@ -19,6 +19,7 @@ public class User implements Serializable {
     private Date dateCC;
     private String path;
     private String diskPath;
+    private boolean isConnected;
 
     public User(String username, String password, String department,
                   String college, String address, String phoneNumber, String numberCC, Date dateCC, String path, String diskPath) {
@@ -32,6 +33,7 @@ public class User implements Serializable {
         this.dateCC = dateCC;
         this.path = path;
         this.diskPath = diskPath;
+        this.isConnected = false;
         this.ensurePath();
     }
     
@@ -45,6 +47,14 @@ public class User implements Serializable {
         } catch (IOException e) {
             // The path already exists
         }
+    }
+
+    public synchronized boolean getIsConnected() {
+        return this.isConnected;
+    }
+
+    public synchronized void setIsConnected(boolean isConnected) {
+        this.isConnected = isConnected;
     }
 
     public String getUsername() {

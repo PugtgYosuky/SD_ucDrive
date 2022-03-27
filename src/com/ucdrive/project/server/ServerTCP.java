@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import com.ucdrive.project.server.client.ClientThread;
 import com.ucdrive.project.server.client.commands.CommandExecutor;
 import com.ucdrive.project.server.client.commands.CommandHandler;
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 import com.ucdrive.project.server.storage.UserData;
 
 public class ServerTCP extends Thread {
@@ -22,14 +23,14 @@ public class ServerTCP extends Thread {
     private UserData userData;
     private CommandExecutor commandExecutor;
     
-    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path) {
+    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path, FileDispatcher fileDispatcher) {
         this.serverPort = serverPort;
         this.ip = ip;
         clients = new Vector<>();
         userData = new UserData(path);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
         try {
-            this.commandExecutor = new CommandExecutor();
+            this.commandExecutor = new CommandExecutor(fileDispatcher);
             CommandHandler.commandExecutor = this.commandExecutor;
         } catch(Exception exc) {
             exc.printStackTrace();
@@ -45,7 +46,6 @@ public class ServerTCP extends Thread {
         System.out.println("Server TCP started in " + ip + " with port: " + serverPort);
         while(true) {
             Socket socket = server.accept();
-            // !!! PODERAO NAO FICAR À ESPERA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             pool.submit(() -> {
                 ClientThread clientThread;
                 try {
@@ -53,9 +53,12 @@ public class ServerTCP extends Thread {
                 } catch (IOException e) {
                     return;
                 }
-
+                System.out.println("Client connected");
                 clients.add(clientThread);
                 clientThread.start();
+                if(clientThread.getUser() != null)
+                    clientThread.getUser().setIsConnected(false);
+                System.out.println("Client disconnected");
                 clients.remove(clientThread);
                 try {
                     socket.close();

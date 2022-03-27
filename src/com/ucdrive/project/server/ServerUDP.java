@@ -10,13 +10,17 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
+
 public class ServerUDP extends Thread{
     
     private Server server;
     private DatagramSocket socket;
-    
-    public ServerUDP(Server server) throws SocketException {
+    private FileDispatcher fileDispatcher;
+
+    public ServerUDP(Server server, FileDispatcher fileDispatcher) throws SocketException {
         this.server = server;
+        this.fileDispatcher = fileDispatcher;
         this.socket = new DatagramSocket(server.getMyUDPPort(), server.getMyIp());
         this.socket.setSoTimeout(server.getTimeout());
     }
@@ -47,12 +51,12 @@ public class ServerUDP extends Thread{
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            try {
+            /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
+            }*/
 
         }
         return true;

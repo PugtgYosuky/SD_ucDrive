@@ -9,6 +9,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
+
 public class Server {
 
     private boolean primaryServer;
@@ -42,8 +44,9 @@ public class Server {
 
     public void start() {
         ServerUDP serverUDP;
+        FileDispatcher fileDispatcher = new FileDispatcher();
 		try {
-			serverUDP = new ServerUDP(this);
+			serverUDP = new ServerUDP(this, fileDispatcher);
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -60,7 +63,7 @@ public class Server {
             e.printStackTrace();
         }
 
-        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath);
+        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher);
         ServerFTP serverFTP = new ServerFTP(0, 10);
         serverTCP.start();
         serverFTP.start();

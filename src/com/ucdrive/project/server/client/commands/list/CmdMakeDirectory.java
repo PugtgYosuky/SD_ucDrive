@@ -1,7 +1,10 @@
 package com.ucdrive.project.server.client.commands.list;
 
 import com.ucdrive.project.server.client.ClientThread;
+import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.*;
+import com.ucdrive.project.server.ftp.sync.FileType;
+import com.ucdrive.project.server.ftp.sync.SyncFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +20,8 @@ public class CmdMakeDirectory extends CommandHandler {
             return CommandAction.INVALID_USAGE;
         }
 
-        String target = client.getUser().getAbsolutePath() + "/" + command.getArg(1);
+        User user = client.getUser();
+        String target = user.getAbsolutePath() + "/" + command.getArg(1);
         File newDir = new File(target);
         
         if(newDir.exists()) {
@@ -26,6 +30,10 @@ public class CmdMakeDirectory extends CommandHandler {
         }
 
         newDir.mkdir();
+
+        String localPath = user.getUsername() + user.getPath() + "/" + command.getArg(1);
+
+        commandExecutor.getFileDispatcher().addFile(new SyncFile(localPath, target, FileType.DIRECTORY));
 
         client.sendMessage("Directory created");
 
