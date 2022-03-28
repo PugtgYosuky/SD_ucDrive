@@ -3,6 +3,7 @@ package com.ucdrive.project.server;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class UDPSynchronized extends Thread{
     private Server server;
     private FileDispatcher fileDispatcher;
     private final int SLEEP_TIME = 10000;
-    private final int PACKET_SIZE = 1024;
+    private final int PACKET_SIZE = 16384;
     private DatagramSocket socket;
 
     public UDPSynchronized(Server server, FileDispatcher fileDispatcher) throws SocketException {
@@ -54,7 +55,7 @@ public class UDPSynchronized extends Thread{
 
     public boolean sendBinaryFile(SyncFile syncFile, String path) {
         try {
-            DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
+            DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE * 2], PACKET_SIZE * 2);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOutputStream);
             File file = new File(syncFile.getAbsolutePath());
@@ -79,7 +80,22 @@ public class UDPSynchronized extends Thread{
                         System.out.println("SEND-INFO: " + server.getOtherSynchronizePort() + " - " + server.getOtherIp().toString());
                         System.out.println("SEND: " + filePacket.getIndex() + " - " + filePacket.getTotalPackets());
                         socket.send(packet);
+                        byte [] response = new byte [PACKET_SIZE * 2];
+                        acknowledge = new DatagramPacket(response, response.length);
                         socket.receive(acknowledge);
+                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(response, 0, acknowledge.getLength());
+                        DataInputStream inputStream = new DataInputStream(byteArrayInputStream);
+                        int nextIndex = inputStream.readInt();
+                        System.out.println("NEXT INDEX: " + nextIndex);
+                        byteArrayInputStream.close();
+                        inputStream.close();
+
+                        if(nextIndex-(i+1) > 0) {
+                            System.out.println("SKIP: " + (nextIndex-(i+1)));
+                            fileData.skipBytes((nextIndex-(i+1)) * PACKET_SIZE);
+                            i = nextIndex;
+                        }
+
                         failOvers = 0;
                         break;
                     } catch(SocketTimeoutException exc) {
@@ -112,7 +128,6 @@ public class UDPSynchronized extends Thread{
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOutputStream);
-            outputStream.flush();
             FilePacket filePacket = new FilePacket(1, 1, file.getPath(), false, path);
             int failOvers = 0;
             outputStream.writeObject(filePacket);
@@ -123,6 +138,7 @@ public class UDPSynchronized extends Thread{
                 try {
                     socket.send(packet);
                     socket.receive(acknowledge);
+
                     failOvers = 0;
                     break;
                 } catch(SocketTimeoutException exc){
@@ -148,33 +164,65 @@ public class UDPSynchronized extends Thread{
             if(file.getType() == FileType.BINARY) {
                 if(sendBinaryFile(file, "/disk/users/")) {
                     fileDispatcher.removeFile();
+                }else{
+                    System.out.println("Time out");
+                    try {
+                        Thread.sleep(SLEEP_TIME);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }else if(file.getType() == FileType.USER_DATA){
                 if(sendBinaryFile(file, "/config/")) {
                     fileDispatcher.removeFile();
+                }else{
+                    System.out.println("Time out");
+                    try {
+                        Thread.sleep(SLEEP_TIME);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             } else {
                 if(sendFolder(file, "/disk/users/")){
                     fileDispatcher.removeFile();
+                }else{
+                    System.out.println("Time out");
+                    try {
+                        Thread.sleep(SLEEP_TIME);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
     
     public void receiveFiles() {
+        int nextIndex;
         PacketHandler packetHandler = new PacketHandler(server);
         while(true){
             try {
-                byte [] buffer = new byte [10000];
+                byte [] buffer = new byte [PACKET_SIZE * 2];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer, 0, packet.getLength());
                 ObjectInputStream inputStream = new ObjectInputStream(byteArrayInputStream);
                 SyncPacket filePacket = (SyncPacket) inputStream.readObject();
 
-                filePacket.execute(packetHandler);
+                nextIndex = filePacket.execute(packetHandler);
+                ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                DataOutputStream outputStream = new DataOutputStream(byteOutputStream);
+                System.out.println("Next index: " + nextIndex);
+                outputStream.writeInt(nextIndex);
+                byte [] acknowledge = byteOutputStream.toByteArray();
+                outputStream.close();
+                byteOutputStream.close();
+                socket.send(new DatagramPacket(acknowledge, acknowledge.length, server.getOtherIp(), server.getOtherSynchronizePort()));
 
-                socket.send(new DatagramPacket(new byte[1], 1, server.getOtherIp(), server.getOtherSynchronizePort()));
             } catch(SocketTimeoutException exc) {
                 if(server.getPrimaryServer())
                     return;

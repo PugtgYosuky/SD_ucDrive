@@ -19,30 +19,34 @@ public class PacketHandler {
         this.server = server;
     }
 
-    public void execute(FilePacket file) throws IOException {
+    public int execute(FilePacket file) throws IOException {
         if(!file.getIsBinaryFile()) {
             new File(server.getStoragePath() + file.getLocation() + file.getPath()).mkdir();
-            return;
+            return 2;
         }
 
         if(currentIndex + 1 != file.getIndex()){
-            return;
+            return currentIndex + 1;
         }
 
         System.out.println("RECEIVED: (" + file.getIndex() + "/" + file.getTotalPackets() + ")");
 
         currentIndex++;
-        if(file.getIndex() == 1) {
+        if(currentIndex == 1) {
             System.out.println("Received file: " + file.getPath());
             fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + file.getLocation() + file.getPath()));
         }
 
+        int next = currentIndex + 1;
+
         fileData.write(file.getBuffer(), 0, file.getBufferLength());
-        
+
         if(file.getIndex() == file.getTotalPackets()) {
             fileData.close();
             currentIndex = 0;
         }
+
+        return next;
     }
 
 }

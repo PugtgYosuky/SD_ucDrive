@@ -4,3 +4,4 @@
 - ter o cliente conectado ao servidor principal, desligar esse servidor e verificar se ele se reconecta ao secundário
 - ter um cliente conectado e tentar reconectar
 - Limitar a threadpool a 2 threads e tentar conectar 3 clientes em simultaneo
+- fazer com que o tempo de resposta seja superior ao timeout para simular a congestao da rede

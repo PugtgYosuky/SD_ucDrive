@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public interface SyncPacket extends Serializable{
-    public void execute(PacketHandler packet) throws IOException;
+    public int execute(PacketHandler packet) throws IOException;
 }

@@ -85,8 +85,8 @@ public class FilePacket implements SyncPacket{
     }
 
     @Override
-    public void execute(PacketHandler packet) throws IOException {
-        packet.execute(this);
+    public int execute(PacketHandler packet) throws IOException {
+        return packet.execute(this);
     }
 
 }
