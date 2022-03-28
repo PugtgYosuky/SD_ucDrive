@@ -176,7 +176,8 @@ public class UDPSynchronized extends Thread{
 
                 socket.send(new DatagramPacket(new byte[1], 1, server.getOtherIp(), server.getOtherSynchronizePort()));
             } catch(SocketTimeoutException exc) {
-                // Verificar estado do server
+                if(server.getPrimaryServer())
+                    return;
             } catch (IOException exc) {
                 exc.printStackTrace();
                 System.out.println("Exception");
