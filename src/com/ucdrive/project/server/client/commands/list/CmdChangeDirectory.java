@@ -9,6 +9,8 @@ import com.ucdrive.project.server.client.commands.Command;
 import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
+import com.ucdrive.project.server.ftp.sync.FileType;
+import com.ucdrive.project.server.ftp.sync.SyncFile;
 
 @CommandDescription(prefix="server-cd", description="Change current directory")
 public class CmdChangeDirectory extends CommandHandler{
@@ -43,8 +45,10 @@ public class CmdChangeDirectory extends CommandHandler{
             user.setPath(userPath);
             client.sendMessage("Directory change to: " + user.getPath());
             client.saveUsers();
+            commandExecutor.getFileDispatcher().addFile(new SyncFile("accounts.txt", commandExecutor.getServer().getStoragePath() + "/config/accounts.txt", FileType.USER_DATA));
             return CommandAction.SUCCESS;
         }
+        
         client.sendMessage("Unknown directory");
 		return CommandAction.INVALID_USAGE;
 	}

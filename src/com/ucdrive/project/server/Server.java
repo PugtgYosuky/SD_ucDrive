@@ -63,7 +63,7 @@ public class Server {
             e.printStackTrace();
         }
 
-        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher);
+        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher, this);
         ServerFTP serverFTP = new ServerFTP(0, 10);
         serverTCP.start();
         serverFTP.start();
@@ -174,6 +174,8 @@ public class Server {
                 BufferedReader buffer = new BufferedReader(new FileReader(file));
                 
                 String[] line = buffer.readLine().split(" ");
+
+                buffer.close();
 
                 String ip = line[0];
                 int portTCP = Integer.parseInt(line[1]);

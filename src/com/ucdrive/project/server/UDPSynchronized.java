@@ -3,10 +3,8 @@ package com.ucdrive.project.server;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,9 +14,11 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
+import com.ucdrive.project.server.ftp.sync.FilePacket;
 import com.ucdrive.project.server.ftp.sync.FileType;
+import com.ucdrive.project.server.ftp.sync.PacketHandler;
 import com.ucdrive.project.server.ftp.sync.SyncFile;
-import com.ucdrive.project.shared.FilePacket;
+import com.ucdrive.project.server.ftp.sync.SyncPacket;
 
 public class UDPSynchronized extends Thread{
     private Server server;
@@ -52,7 +52,7 @@ public class UDPSynchronized extends Thread{
         this.fileDispatcher = fileDispatcher;
     }
 
-    public boolean sendBinaryFile(SyncFile syncFile) {
+    public boolean sendBinaryFile(SyncFile syncFile, String path) {
         try {
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
@@ -62,7 +62,7 @@ public class UDPSynchronized extends Thread{
             long nBytes = file.length();
             int numberPackets = (int) Math.ceil(nBytes*1.0 / PACKET_SIZE);
             byte[] bytes = new byte[PACKET_SIZE];
-            FilePacket filePacket = new FilePacket(1, numberPackets, syncFile.getPath(), true);
+            FilePacket filePacket = new FilePacket(1, numberPackets, syncFile.getPath(), true, path);
             int read;
             int i = 1;
             int failOvers = 0;
@@ -107,13 +107,13 @@ public class UDPSynchronized extends Thread{
 
         return true;
     }
-    public boolean sendFolder(SyncFile file) {
+    public boolean sendFolder(SyncFile file, String path) {
         try {
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOutputStream);
             outputStream.flush();
-            FilePacket filePacket = new FilePacket(1, 1, file.getPath(), false);
+            FilePacket filePacket = new FilePacket(1, 1, file.getPath(), false, path);
             int failOvers = 0;
             outputStream.writeObject(filePacket);
             byte [] buffer = byteOutputStream.toByteArray();
@@ -146,11 +146,15 @@ public class UDPSynchronized extends Thread{
         while((file = fileDispatcher.getFile()) != null) {
             System.out.println("SENDING: " + file.getPath());
             if(file.getType() == FileType.BINARY) {
-                if(sendBinaryFile(file)) {
+                if(sendBinaryFile(file, "/disk/users/")) {
+                    fileDispatcher.removeFile();
+                }
+            }else if(file.getType() == FileType.USER_DATA){
+                if(sendBinaryFile(file, "/config/")) {
                     fileDispatcher.removeFile();
                 }
             } else {
-                if(sendFolder(file)){
+                if(sendFolder(file, "/disk/users/")){
                     fileDispatcher.removeFile();
                 }
             }
@@ -158,8 +162,7 @@ public class UDPSynchronized extends Thread{
     }
     
     public void receiveFiles() {
-        DataOutputStream fileData = null;
-        int currentIndex = 0;
+        PacketHandler packetHandler = new PacketHandler(server);
         while(true){
             try {
                 byte [] buffer = new byte [10000];
@@ -167,32 +170,11 @@ public class UDPSynchronized extends Thread{
                 socket.receive(packet);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer, 0, packet.getLength());
                 ObjectInputStream inputStream = new ObjectInputStream(byteArrayInputStream);
-                FilePacket filePacket = (FilePacket) inputStream.readObject();
+                SyncPacket filePacket = (SyncPacket) inputStream.readObject();
 
+                filePacket.execute(packetHandler);
 
-                System.out.println(filePacket.getIndex() + " " + filePacket.getTotalPackets());
-                
-                socket.send(new DatagramPacket(new byte[1024], 10, server.getOtherIp(), server.getOtherSynchronizePort()));
-                if(!filePacket.getIsBinaryFile()) {
-                    new File(server.getStoragePath() + "/disk/users/" + filePacket.getPath()).mkdir();
-                    continue;
-                }
-                if(currentIndex + 1 != filePacket.getIndex()){
-                    continue;
-                }
-                currentIndex++;
-                if(filePacket.getIndex() == 1) {
-                    System.out.println("Received file: " + filePacket.getPath());
-                    fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + "/disk/users/" + filePacket.getPath()));
-                }
-
-                fileData.write(filePacket.getBuffer(), 0, filePacket.getBufferLength());
-                
-                if(filePacket.getIndex() == filePacket.getTotalPackets()) {
-                    fileData.close();
-                    currentIndex = 0;
-                }
-
+                socket.send(new DatagramPacket(new byte[1], 1, server.getOtherIp(), server.getOtherSynchronizePort()));
             } catch(SocketTimeoutException exc) {
                 // Verificar estado do server
             } catch (IOException exc) {

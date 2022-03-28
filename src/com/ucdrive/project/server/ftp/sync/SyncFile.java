@@ -1,12 +1,12 @@
 package com.ucdrive.project.server.ftp.sync;
 
-public class SyncFile {
+public class SyncFile{
     
     private String path;
     private String absolutePath;
     private FileType type;
     
-    public SyncFile(String path, String absolutePath, FileType type) {
+    public SyncFile(String path, String absolutePath, FileType type){
         this.path = path;
         this.absolutePath = absolutePath;
         this.type = type;
@@ -35,4 +35,5 @@ public class SyncFile {
     public void setType(FileType type) {
         this.type = type;
     }
+
 }

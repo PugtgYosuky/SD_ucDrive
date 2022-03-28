@@ -23,14 +23,14 @@ public class ServerTCP extends Thread {
     private UserData userData;
     private CommandExecutor commandExecutor;
     
-    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path, FileDispatcher fileDispatcher) {
+    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path, FileDispatcher fileDispatcher, Server server) {
         this.serverPort = serverPort;
         this.ip = ip;
         clients = new Vector<>();
         userData = new UserData(path);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
         try {
-            this.commandExecutor = new CommandExecutor(fileDispatcher);
+            this.commandExecutor = new CommandExecutor(fileDispatcher, server);
             CommandHandler.commandExecutor = this.commandExecutor;
         } catch(Exception exc) {
             exc.printStackTrace();

@@ -46,50 +46,50 @@ public class Client {
 
     public void run() {
         ResponseHandler responseHandler = new ResponseHandler(this);
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
+			int failOvers = 0, maxFailOvers = 10;
 
-        int failOvers = 0, maxFailOvers = 10;
+			while(failOvers < maxFailOvers) {
+			    boolean hasServer = getCurrentSocket();
 
-        while(failOvers < maxFailOvers) {
-            boolean hasServer = getCurrentSocket();
+			    if(!hasServer) {
+			        failOvers++;
+			        System.out.println("Client couldn't connect to any server. Trying to reconnect (" + failOvers + "/" + maxFailOvers + ")");
+			        
+			        try {
+			            Thread.sleep(1000);
+			        } catch (InterruptedException e) {
+			            e.printStackTrace();
+			        }
+			        continue;
+			    }
 
-            if(!hasServer) {
-                failOvers++;
-                System.out.println("Client couldn't connect to any server. Trying to reconnect (" + failOvers + "/" + maxFailOvers + ")");
-                
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                continue;
-            }
+			    try (ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
+			        DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());) {
+			        failOvers = 0;
+			        System.out.println("Connected");
 
-            try (ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
-                DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());) {
-                failOvers = 0;
-                System.out.println("Connected");
+			        CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
+			        CommandHandler.commandExecutor = commandExecutor;
 
-                CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
-                CommandHandler.commandExecutor = commandExecutor;
+			        new ReadThread(inputStream, responseHandler).start();
 
-                new ReadThread(inputStream, responseHandler).start();
-
-                /*
-                    !!! In order to identify the moment we lose connection with the server
-                */
-                while(true) {
-                    String command = scanner.nextLine();
-                    commandExecutor.execute(new Command(command, this));
-                }
-                
-            } catch (IOException exc) {
-                System.out.println("Lost connection with the server. Trying to reconnect...");
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exc) {
-                exc.printStackTrace();
-                return;
-            }
-        }
+			        /*
+			            !!! In order to identify the moment we lose connection with the server
+			        */
+			        while(true) {
+			            String command = scanner.nextLine();
+			            commandExecutor.execute(new Command(command, this));
+			        }
+			        
+			    } catch (IOException exc) {
+			        System.out.println("Lost connection with the server. Trying to reconnect...");
+			    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exc) {
+			        exc.printStackTrace();
+			        return;
+			    }
+			}
+		}
     }
 
     public static void main(String[] args) {

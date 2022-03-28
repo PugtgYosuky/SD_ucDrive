@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.ucdrive.project.server.Server;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class CommandExecutor {
@@ -20,6 +21,7 @@ public class CommandExecutor {
     private Map<String, Function<Command, CommandAction>> commands;
     private Set<CommandDescription> commandDescriptions;
     private FileDispatcher fileDispatcher;
+    private Server server;
 
     /**
      * Get all the classes in a package
@@ -49,9 +51,10 @@ public class CommandExecutor {
     }
 
     // Initializing the command executor.
-    public CommandExecutor(FileDispatcher fileDispatcher) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public CommandExecutor(FileDispatcher fileDispatcher, Server server) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         this.commands = new HashMap<>();
         this.fileDispatcher = fileDispatcher;
+        this.server = server;
         this.commandDescriptions = new TreeSet<>(Comparator.comparing(CommandDescription::prefix));
 
         for(Class<?> c : getPackageClasses("com.ucdrive.project.server.client.commands.list")) {
@@ -74,6 +77,18 @@ public class CommandExecutor {
 
     public FileDispatcher getFileDispatcher() {
         return fileDispatcher;
+    }
+
+    public void setFileDispatcher(FileDispatcher fileDispatcher) {
+        this.fileDispatcher = fileDispatcher;
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
     }
 
     /**
