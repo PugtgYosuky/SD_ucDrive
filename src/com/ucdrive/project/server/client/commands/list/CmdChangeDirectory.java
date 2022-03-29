@@ -35,6 +35,10 @@ public class CmdChangeDirectory extends CommandHandler{
             target = user.getAbsolutePath().substring(0, user.getAbsolutePath().lastIndexOf("/"));
             userPath = user.getPath().substring(0, user.getPath().lastIndexOf("/"));
         } else {
+            if(newDirectory.contains("..")) {
+                client.sendMessage("Invalid move. You can only go back by one folder at a time...");
+                return CommandAction.ERROR;
+            }
             target = user.getAbsolutePath() + "/" + newDirectory;
             userPath = user.getPath() + "/" + newDirectory;
         }

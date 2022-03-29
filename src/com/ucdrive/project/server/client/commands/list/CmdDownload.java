@@ -23,6 +23,11 @@ public class CmdDownload extends CommandHandler {
         ClientThread clientThread = command.getClient();
         User user = clientThread.getUser();
         String filePath = user.getAbsolutePath() + "/" + fileName;
+
+        if(fileName.contains("..")) {
+            clientThread.sendMessage("You can't use .. in this command");
+            return CommandAction.ERROR;
+        }
         
         File file = new File(filePath);
 

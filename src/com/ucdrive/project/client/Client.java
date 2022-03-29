@@ -114,8 +114,6 @@ public class Client {
             client.run();
         } catch (UnknownHostException e) {
             e.printStackTrace();            
-        } catch(NumberFormatException e) {
-            e.printStackTrace();
         }
     }
     
