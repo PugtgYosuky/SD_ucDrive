@@ -32,9 +32,10 @@ public class DataThread {
     
             int read;
             
-            while((read = fileData.read(bytes)) != -1) {
+            while((read = fileData.read(bytes)) != -1) {    
                 outputStream.write(bytes, 0, read);
             }
+
             fileData.close();
             return true;
         } catch(IOException exc) {

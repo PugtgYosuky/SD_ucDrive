@@ -47,7 +47,7 @@ public class ClientThread {
     public boolean authenticate() throws IOException {
         String s;
         // TODO: ADD A TIMEOUT
-        sendMessage("Insert username: ");
+        //sendMessage("Insert username: ");
         s = inputStream.readUTF();
 
         client = userData.findUser(s);
@@ -63,7 +63,7 @@ public class ClientThread {
             return false;
         }
 
-        sendMessage("Password: ");
+        //sendMessage("Password: ");
         s = inputStream.readUTF();
 
         if(s.equals(client.getPassword())) {

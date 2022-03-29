@@ -127,6 +127,7 @@ public class ServerUDP extends Thread{
         server.setPrimaryServer(primaryServer);
         try {
             UDPSynchronized synchronizedThread = new UDPSynchronized(this.server, this.fileDispatcher);
+            fileDispatcher.setUdpSynchronized(synchronizedThread);
             synchronizedThread.start();
         } catch (SocketException e) {
             // TODO Auto-generated catch block

@@ -22,6 +22,8 @@ public class Client {
     private InetAddress ipServerB;
     private int portServerA;
     private int portServerB;
+    private String username;
+    private String password;
     private Socket server;
 
     public Client(String path, InetAddress ipServerA, InetAddress ipServerB, int portServerA, int portServerB) {
@@ -29,7 +31,9 @@ public class Client {
         this.ipServerA = ipServerA;
         this.ipServerB = ipServerB;
         this.portServerA = portServerA;
-        this.portServerB = portServerB; 
+        this.portServerB = portServerB;
+        this.username = "";
+        this.password = "";
     }
 
     private boolean getCurrentSocket() {
@@ -47,8 +51,14 @@ public class Client {
 
     public void run() {
         ResponseHandler responseHandler = new ResponseHandler(this);
+        String command = "";
         try (Scanner scanner = new Scanner(System.in)) {
 			int failOvers = 0, maxFailOvers = 10;
+
+            System.out.println("Insert username: ");
+            this.username = scanner.nextLine();
+            System.out.println("Insert password: ");
+            this.password = scanner.nextLine();
 
 			while(failOvers < maxFailOvers) {
 			    boolean hasServer = getCurrentSocket();
@@ -70,18 +80,20 @@ public class Client {
 			        failOvers = 0;
 			        System.out.println("Connected");
 
-			        CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
-			        CommandHandler.commandExecutor = commandExecutor;
-
-			        ReadThread readThread = new ReadThread(inputStream, responseHandler);
+                    CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
+                    CommandHandler.commandExecutor = commandExecutor;
+                
+                    outputStream.writeUTF(this.username);
+                    outputStream.writeUTF(this.password);
+                    
+                    ReadThread readThread = new ReadThread(inputStream, responseHandler);
                     readThread.start();
 
-			        /*
-			            !!! In order to identify the moment we lose connection with the server
-			        */
 			        while(true) {
-			            String command = scanner.nextLine();
+                        if(command.isEmpty())
+			                command = scanner.nextLine();
 			            CommandAction commandAction = commandExecutor.execute(new Command(command, this));
+                        command = "";
                         if(commandAction == CommandAction.CLOSE_CONNECTION) {
                             readThread.interrupt();
                             System.out.println("Client closed");
@@ -116,13 +128,29 @@ public class Client {
             e.printStackTrace();            
         }
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getPath(){
+        return path;
+    }
     
     public void setPath(String path){
         this.path = path;
-    }
-
-    public String getPath(){
-        return path;
     }
 
     public InetAddress getIpServerA() {

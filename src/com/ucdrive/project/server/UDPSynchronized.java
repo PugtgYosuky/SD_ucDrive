@@ -240,14 +240,18 @@ public class UDPSynchronized extends Thread{
     public void run() {
         while(true){
             if(server.getPrimaryServer()){
-                System.out.println("Trying to send files...");
-                try {
-                    Thread.sleep(SLEEP_TIME);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                synchronized(this) {
+                    while(fileDispatcher.getSize() == 0) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            return;
+                        }
+                    }
+                    System.out.println("Trying to send files...");
+                    sendFiles();
                 }
-                sendFiles();
-            }else {
+        }else {
                 System.out.println("Waiting for files...");
                 receiveFiles();
             }
