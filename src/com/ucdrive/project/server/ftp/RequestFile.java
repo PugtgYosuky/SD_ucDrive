@@ -10,12 +10,18 @@ public class RequestFile {
     private User user;
     private String path;
     private RequestType type;
+    private String fileName;
     
-    public RequestFile (User user, String path, RequestType type) {
+    public RequestFile (User user, String path, RequestType type, String fileName) {
         this.uniqueID = UUID.randomUUID().toString();
         this.user = user;
         this.path = path;
         this.type = type;
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public String getUniqueID() {

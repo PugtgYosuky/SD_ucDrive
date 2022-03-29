@@ -55,10 +55,12 @@ public class Client {
         try (Scanner scanner = new Scanner(System.in)) {
 			int failOvers = 0, maxFailOvers = 10;
 
-            System.out.println("Insert username: ");
-            this.username = scanner.nextLine();
-            System.out.println("Insert password: ");
-            this.password = scanner.nextLine();
+            //System.out.println("Insert username: ");
+            //this.username = scanner.nextLine();
+            //System.out.println("Insert password: ");
+            //this.password = scanner.nextLine();
+            this.username="username1";
+            this.password = "123";
 
 			while(failOvers < maxFailOvers) {
 			    boolean hasServer = getCurrentSocket();

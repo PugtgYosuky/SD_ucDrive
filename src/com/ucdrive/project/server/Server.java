@@ -44,9 +44,8 @@ public class Server {
 
     public void start() {
         ServerUDP serverUDP;
-        FileDispatcher fileDispatcher = new FileDispatcher();
 		try {
-			serverUDP = new ServerUDP(this, fileDispatcher);
+			serverUDP = new ServerUDP(this);
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -63,8 +62,10 @@ public class Server {
             e.printStackTrace();
         }
 
+        FileDispatcher fileDispatcher = serverUDP.getSynchronizedThread().getFileDispatcher();
+
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher, this);
-        ServerFTP serverFTP = new ServerFTP(0, 10);
+        ServerFTP serverFTP = new ServerFTP(0, 10, fileDispatcher);
         serverTCP.start();
         serverFTP.start();
         try {

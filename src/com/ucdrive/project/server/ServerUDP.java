@@ -10,19 +10,25 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import com.ucdrive.project.server.ftp.sync.FileDispatcher;
-
 public class ServerUDP extends Thread{
     
     private Server server;
     private DatagramSocket socket;
-    private FileDispatcher fileDispatcher;
+    private UDPSynchronized synchronizedThread;
 
-    public ServerUDP(Server server, FileDispatcher fileDispatcher) throws SocketException {
+    public ServerUDP(Server server) throws SocketException {
         this.server = server;
-        this.fileDispatcher = fileDispatcher;
         this.socket = new DatagramSocket(server.getMyUDPPort(), server.getMyIp());
         this.socket.setSoTimeout(server.getTimeout());
+        this.synchronizedThread = new UDPSynchronized(this.server);
+    }
+
+    public UDPSynchronized getSynchronizedThread() {
+        return this.synchronizedThread;
+    }
+
+    public void setSynchronizedThread(UDPSynchronized synchronizedThread) {
+        this.synchronizedThread = synchronizedThread;
     }
 
     private boolean isPrimary() {
@@ -125,15 +131,7 @@ public class ServerUDP extends Thread{
     public void run() {
         boolean primaryServer = isPrimary();
         server.setPrimaryServer(primaryServer);
-        try {
-            UDPSynchronized synchronizedThread = new UDPSynchronized(this.server, this.fileDispatcher);
-            fileDispatcher.setUdpSynchronized(synchronizedThread);
-            synchronizedThread.start();
-        } catch (SocketException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return;
-        }
+        synchronizedThread.start();
         if(primaryServer) {
             synchronized(this) {
                 this.notifyAll();

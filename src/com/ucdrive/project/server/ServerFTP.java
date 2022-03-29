@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import com.ucdrive.project.server.ftp.DataThread;
 import com.ucdrive.project.server.ftp.RequestDispatcher;
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class ServerFTP extends Thread{
 
@@ -17,12 +18,14 @@ public class ServerFTP extends Thread{
     private int serverPort;
     private static RequestDispatcher requests;
     private ThreadPoolExecutor pool;
+    private FileDispatcher fileDispatcher;
     
-    public ServerFTP(int serverPort, int maxThreads) {
+    public ServerFTP(int serverPort, int maxThreads, FileDispatcher fileDispatcher) {
         this.serverPort = serverPort;
         if(requests == null)
             requests = new RequestDispatcher();
         this.pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
+        this.fileDispatcher = fileDispatcher;
     }
 
     public static RequestDispatcher getRequestDispatcher() {
@@ -35,7 +38,7 @@ public class ServerFTP extends Thread{
             pool.submit(() -> {
                 DataThread dataThread;
                 try {
-                    dataThread = new DataThread(socket, requests);
+                    dataThread = new DataThread(socket, requests, fileDispatcher);
                 } catch (IOException e) {
                     return;
                 }

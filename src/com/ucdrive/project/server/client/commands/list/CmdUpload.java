@@ -11,8 +11,6 @@ import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.RequestFile;
 import com.ucdrive.project.server.ftp.RequestType;
-import com.ucdrive.project.server.ftp.sync.FileType;
-import com.ucdrive.project.server.ftp.sync.SyncFile;
 import com.ucdrive.project.shared.Transfer;
 
 @CommandDescription(prefix="upload", description="Upload a file")
@@ -25,12 +23,10 @@ public class CmdUpload extends CommandHandler {
         User user = clientThread.getUser();
         String filePath = user.getAbsolutePath() + "/" + fileName;
 
-        RequestFile requestFile = new RequestFile(user, filePath, RequestType.UPLOAD);
+        RequestFile requestFile = new RequestFile(user, filePath, RequestType.UPLOAD, fileName);
         ServerFTP.getRequestDispatcher().addRequest(requestFile);
         clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.UPLOAD, ServerFTP.getIp()));
         clientThread.sendMessage("Upload concluded");
-        String path = user.getUsername() + user.getPath() + "/" + fileName;
-        commandExecutor.getFileDispatcher().addFile(new SyncFile(path, filePath, FileType.BINARY));
 
         return CommandAction.SUCCESS;
     }

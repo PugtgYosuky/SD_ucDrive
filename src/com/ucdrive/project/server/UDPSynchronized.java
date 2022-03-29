@@ -28,13 +28,11 @@ public class UDPSynchronized extends Thread{
     private final int PACKET_SIZE = 16384;
     private DatagramSocket socket;
 
-    public UDPSynchronized(Server server, FileDispatcher fileDispatcher) throws SocketException {
+    public UDPSynchronized(Server server) throws SocketException {
         this.server = server;
-        System.out.println("START : " + server.getSynchronizePort() + " - " + server.getMyIp().toString());
-        System.out.println("SEND-INFO: " + server.getOtherSynchronizePort() + " - " + server.getOtherIp().toString());
         this.socket = new DatagramSocket(server.getSynchronizePort(), server.getMyIp());
         this.socket.setSoTimeout(server.getTimeout());
-        this.fileDispatcher = fileDispatcher;
+        this.fileDispatcher = new FileDispatcher(this);
     }
     
     public Server getServer() {
@@ -77,8 +75,6 @@ public class UDPSynchronized extends Thread{
                 
                 while(failOvers < server.getHeartbeats()) {
                     try {
-                        System.out.println("SEND-INFO: " + server.getOtherSynchronizePort() + " - " + server.getOtherIp().toString());
-                        System.out.println("SEND: " + filePacket.getIndex() + " - " + filePacket.getTotalPackets());
                         socket.send(packet);
                         byte [] response = new byte [PACKET_SIZE * 2];
                         acknowledge = new DatagramPacket(response, response.length);
@@ -86,12 +82,10 @@ public class UDPSynchronized extends Thread{
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(response, 0, acknowledge.getLength());
                         DataInputStream inputStream = new DataInputStream(byteArrayInputStream);
                         int nextIndex = inputStream.readInt();
-                        System.out.println("NEXT INDEX: " + nextIndex);
                         byteArrayInputStream.close();
                         inputStream.close();
 
                         if(nextIndex-(i+1) > 0) {
-                            System.out.println("SKIP: " + (nextIndex-(i+1)));
                             fileData.skipBytes((nextIndex-(i+1)) * PACKET_SIZE);
                             i = nextIndex;
                         }
@@ -216,7 +210,6 @@ public class UDPSynchronized extends Thread{
                 nextIndex = filePacket.execute(packetHandler);
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
                 DataOutputStream outputStream = new DataOutputStream(byteOutputStream);
-                System.out.println("Next index: " + nextIndex);
                 outputStream.writeInt(nextIndex);
                 byte [] acknowledge = byteOutputStream.toByteArray();
                 outputStream.close();
@@ -240,24 +233,26 @@ public class UDPSynchronized extends Thread{
     public void run() {
         while(true){
             if(server.getPrimaryServer()){
+                //System.out.println("File dispacher size: " + fileDispatcher.getSize());
                 synchronized(this) {
                     while(fileDispatcher.getSize() == 0) {
+                        System.out.println("Waiting for files...");
                         try {
                             this.wait();
                         } catch (InterruptedException e) {
+                            e.printStackTrace();
                             return;
                         }
+                        System.out.println("I'M ALIVE");
                     }
-                    System.out.println("Trying to send files...");
-                    sendFiles();
                 }
-        }else {
+                System.out.println("Trying to send files...");
+                sendFiles();
+            } else {
                 System.out.println("Waiting for files...");
                 receiveFiles();
             }
-            
         }
     }
-    
 
 }

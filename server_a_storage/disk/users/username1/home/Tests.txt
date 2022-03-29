@@ -1,7 +1,0 @@
-- abrir ficheiro do lado do cliente logo após ter feito o upload
-- abrir os dois servidores ao mesmo tempo --> assumem os dois que são secundários e não conseguem sair desse ciclo
-- abrir os dois servidores, desligar o primário e verificar se o outro fica com o lugar de primário
-- ter o cliente conectado ao servidor principal, desligar esse servidor e verificar se ele se reconecta ao secundário
-- ter um cliente conectado e tentar reconectar
-- Limitar a threadpool a 2 threads e tentar conectar 3 clientes em simultaneo
-- fazer com que o tempo de resposta seja superior ao timeout para simular a congestao da rede
