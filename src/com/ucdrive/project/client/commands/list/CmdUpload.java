@@ -13,6 +13,10 @@ public class CmdUpload extends CommandHandler{
 
     @Override
     public CommandAction parse(Command command) throws IOException {
+        if(command.getArgsLength() < 2) {
+            System.out.println("Invalid usage. Use: upload <file name>");
+            return CommandAction.INVALID_USAGE;
+        }
         String path = commandExecutor.getClient().getPath() + "/" + command.getArg(1);
         File file = new File(path);
         if(file.exists() && !file.isDirectory()) {

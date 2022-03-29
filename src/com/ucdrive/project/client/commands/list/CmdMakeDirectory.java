@@ -15,7 +15,7 @@ public class CmdMakeDirectory extends CommandHandler {
     @Override
     public CommandAction parse(Command command) throws IOException {
         Client client = command.getClient();
-        if(command.getArgsLength() < 1) {
+        if(command.getArgsLength() < 2) {
             System.out.println("Invalid usage. Use: mkdir <dir name>");
             return CommandAction.INVALID_USAGE;
         }

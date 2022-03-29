@@ -138,7 +138,6 @@ public class ServerUDP extends Thread{
             }
             receivePings();
         } else {
-            System.out.println("here :)");
             sendPings();
             server.setPrimaryServer(true);
             synchronized(this) {

@@ -63,9 +63,7 @@ public class DataThread {
 
             System.out.println("ADD FILE TO FILE DISPATCHER: " + path + " - " + requestFile.getPath());
             SyncFile syncFile = new SyncFile(path, requestFile.getPath(), FileType.BINARY);
-            System.out.println("Here");
             fileDispatcher.addFile(syncFile);
-            System.out.println("KJADGHAJDGAA");
             
             
             return true;

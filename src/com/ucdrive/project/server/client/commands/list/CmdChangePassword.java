@@ -19,7 +19,10 @@ public class CmdChangePassword extends CommandHandler {
 
     @Override
     public CommandAction parse(Command command) throws IOException {
-
+        if(command.getArgsLength() < 2){
+            command.getClient().sendMessage("Invalid usage. Use: change-password <password>");
+            return CommandAction.INVALID_USAGE;
+        }
         String password = command.getArg(1);
         ClientThread client = command.getClient();
         client.getUser().setPassword(password);

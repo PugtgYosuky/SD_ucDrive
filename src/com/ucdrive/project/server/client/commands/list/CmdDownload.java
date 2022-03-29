@@ -19,8 +19,12 @@ public class CmdDownload extends CommandHandler {
 
     @Override
     public CommandAction parse(Command command) throws IOException {
-        String fileName = command.getArg(1);
         ClientThread clientThread = command.getClient();
+        if(command.getArgsLength() < 2){
+            clientThread.sendMessage("Invalid usage. Use: download <filename>");
+            return CommandAction.INVALID_USAGE;
+        }
+        String fileName = command.getArg(1);
         User user = clientThread.getUser();
         String filePath = user.getAbsolutePath() + "/" + fileName;
 
@@ -28,7 +32,6 @@ public class CmdDownload extends CommandHandler {
             clientThread.sendMessage("You can't use .. in this command");
             return CommandAction.ERROR;
         }
-        
         File file = new File(filePath);
 
         if(file.exists()){
