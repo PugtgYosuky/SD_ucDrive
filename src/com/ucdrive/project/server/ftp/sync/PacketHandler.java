@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.ucdrive.project.server.Server;
 
@@ -30,6 +31,11 @@ public class PacketHandler {
         }
 
         System.out.println("RECEIVED: (" + file.getIndex() + "/" + file.getTotalPackets() + ")");
+
+        if(Arrays.compare(file.getChecksum(), file.calculateChecksum(file.getBuffer())) != 0) {
+            System.out.println("Checksum failed");
+            return currentIndex;
+        }
 
         currentIndex++;
         if(currentIndex == 1) {

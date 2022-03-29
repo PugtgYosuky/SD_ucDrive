@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import com.ucdrive.project.client.commands.Command;
+import com.ucdrive.project.client.commands.CommandAction;
 import com.ucdrive.project.client.commands.CommandExecutor;
 import com.ucdrive.project.client.commands.CommandHandler;
 import com.ucdrive.project.client.response.ResponseHandler;
@@ -72,15 +73,24 @@ public class Client {
 			        CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
 			        CommandHandler.commandExecutor = commandExecutor;
 
-			        new ReadThread(inputStream, responseHandler).start();
+			        ReadThread readThread = new ReadThread(inputStream, responseHandler);
+                    readThread.start();
 
 			        /*
 			            !!! In order to identify the moment we lose connection with the server
 			        */
 			        while(true) {
 			            String command = scanner.nextLine();
-			            commandExecutor.execute(new Command(command, this));
-			        }
+			            CommandAction commandAction = commandExecutor.execute(new Command(command, this));
+                        if(commandAction == CommandAction.CLOSE_CONNECTION) {
+                            readThread.interrupt();
+                            System.out.println("Client closed");
+                            inputStream.close();
+                            outputStream.close();
+                            scanner.close();
+                            return;
+                        }
+                    }
 			        
 			    } catch (IOException exc) {
 			        System.out.println("Lost connection with the server. Trying to reconnect...");

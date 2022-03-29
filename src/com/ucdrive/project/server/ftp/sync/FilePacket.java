@@ -1,6 +1,8 @@
 package com.ucdrive.project.server.ftp.sync;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class FilePacket implements SyncPacket{
     private int index; // starts at 1
@@ -10,6 +12,7 @@ public class FilePacket implements SyncPacket{
     private String path; // id
     private boolean isBinaryFile;
     private String location;
+    private byte [] checksum;
 
     public FilePacket(int index, int totalPackets, byte[] buffer, String path, boolean isBinaryFile, String location) {
         this.index = index;
@@ -27,13 +30,21 @@ public class FilePacket implements SyncPacket{
         this.isBinaryFile = isBinaryFile;
         this.location = location;
     }
-    
+    public byte[] getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(byte[] checksum) {
+        this.checksum = checksum;
+    }
+
     public byte[] getBuffer() {
         return buffer;
     }
     
     public void setBuffer(byte[] buffer) {
         this.buffer = buffer;
+        this.checksum = calculateChecksum(buffer);
     }
     
     public int getBufferLength() {
@@ -82,6 +93,19 @@ public class FilePacket implements SyncPacket{
 
     public void setBinaryFile(boolean isBinaryFile) {
         this.isBinaryFile = isBinaryFile;
+    }
+
+    public byte[] calculateChecksum(byte[] buffer){
+        byte [] checksum = null;
+        try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+            checksum = md.digest(this.buffer);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return checksum;
     }
 
     @Override

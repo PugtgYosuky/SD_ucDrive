@@ -71,10 +71,14 @@ public class CommandExecutor {
         return this.commandDescriptions;
     }
 
+    public CommandAction executeServerCommand(Command command) throws IOException {
+        outputStream.writeUTF(command.getCommand());
+        return CommandAction.SUCCESS;
+    }
+
     public CommandAction execute(Command command) throws IOException {
         if(this.commands.get(command.getPrefix()) == null) {
-            outputStream.writeUTF(command.getCommand());
-            return CommandAction.NOT_FOUND;
+            return executeServerCommand(command);
         } else {
             return this.commands.get(command.getPrefix()).apply(command);
         }
