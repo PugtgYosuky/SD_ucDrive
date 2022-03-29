@@ -14,6 +14,7 @@ import com.ucdrive.project.client.commands.CommandAction;
 import com.ucdrive.project.client.commands.CommandExecutor;
 import com.ucdrive.project.client.commands.CommandHandler;
 import com.ucdrive.project.client.response.ResponseHandler;
+import com.ucdrive.project.shared.Response;
 
 public class Client {
 
@@ -49,70 +50,92 @@ public class Client {
         return true;
     }
 
-    public void run() {
-        ResponseHandler responseHandler = new ResponseHandler(this);
+    public void login(Scanner scanner) {
+        System.out.println("Insert username: ");
+        this.username = scanner.nextLine();
+        System.out.println("Insert password: ");
+        this.password = scanner.nextLine();
+    }
+    public boolean readCommands(Scanner scanner, ResponseHandler responseHandler){
+        int failOvers = 0, maxFailOvers = 10;
         String command = "";
-        try (Scanner scanner = new Scanner(System.in)) {
-			int failOvers = 0, maxFailOvers = 10;
-
-            //System.out.println("Insert username: ");
-            //this.username = scanner.nextLine();
-            //System.out.println("Insert password: ");
-            //this.password = scanner.nextLine();
-            this.username="username1";
-            this.password = "123";
-
-			while(failOvers < maxFailOvers) {
-			    boolean hasServer = getCurrentSocket();
-
-			    if(!hasServer) {
-			        failOvers++;
-			        System.out.println("Client couldn't connect to any server. Trying to reconnect (" + failOvers + "/" + maxFailOvers + ")");
-			        
-			        try {
-			            Thread.sleep(1000);
-			        } catch (InterruptedException e) {
-			            e.printStackTrace();
-			        }
-			        continue;
-			    }
-
-			    try (ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
-			        DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());) {
-			        failOvers = 0;
-			        System.out.println("Connected");
-
-                    CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
-                    CommandHandler.commandExecutor = commandExecutor;
+        while(failOvers < maxFailOvers) {
+            boolean hasServer = getCurrentSocket();
+            if(!hasServer) {
+                failOvers++;
+                System.out.println("Client couldn't connect to any server. Trying to reconnect (" + failOvers + "/" + maxFailOvers + ")");
                 
-                    outputStream.writeUTF(this.username);
-                    outputStream.writeUTF(this.password);
-                    
-                    ReadThread readThread = new ReadThread(inputStream, responseHandler);
-                    readThread.start();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+            try (ObjectInputStream inputStream = new ObjectInputStream(server.getInputStream());
+                DataOutputStream outputStream = new DataOutputStream(server.getOutputStream());) {
+                failOvers = 0;
 
-			        while(true) {
-                        if(command.isEmpty())
-			                command = scanner.nextLine();
-			            CommandAction commandAction = commandExecutor.execute(new Command(command, this));
-                        command = "";
-                        if(commandAction == CommandAction.CLOSE_CONNECTION) {
+                CommandExecutor commandExecutor = new CommandExecutor(this, outputStream);
+                CommandHandler.commandExecutor = commandExecutor;
+            
+                outputStream.writeUTF(this.username);
+                outputStream.writeUTF(this.password);
+                
+                try {
+					Response res = (Response) inputStream.readObject();
+                    System.out.println(res.getCommand());
+                    if(!res.getCommand().equals("You are now connected! :)"))
+                        return true;
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+
+                ReadThread readThread = new ReadThread(inputStream, responseHandler);
+                readThread.start();
+
+                while(true) {
+                    if(command.isEmpty())
+                        command = scanner.nextLine();
+                    CommandAction commandAction = commandExecutor.execute(new Command(command, this));
+                    command = "";
+                    switch(commandAction) {
+                        case CLOSE_CONNECTION:
                             readThread.interrupt();
                             System.out.println("Client closed");
                             inputStream.close();
                             outputStream.close();
-                            scanner.close();
-                            return;
-                        }
+                            return false;
+                        case CHANGE_PASSWORD:
+                            System.out.println("Password changed");
+                            readThread.interrupt();
+                            inputStream.close();
+                            outputStream.close();
+                            return true;
+                        default:
+                            break;
                     }
-			        
-			    } catch (IOException exc) {
-			        System.out.println("Lost connection with the server. Trying to reconnect...");
-			    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exc) {
-			        exc.printStackTrace();
-			        return;
-			    }
-			}
+                }
+            } catch (IOException exc) {
+                System.out.println("Lost connection with the server. Trying to reconnect...");
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exc) {
+                exc.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void run() {
+        ResponseHandler responseHandler = new ResponseHandler(this);
+        
+        try (Scanner scanner = new Scanner(System.in)) {
+            while(true) {
+                login(scanner);
+
+                if(!readCommands(scanner, responseHandler))
+                    return;
+            }
 		}
     }
 

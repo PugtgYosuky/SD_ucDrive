@@ -44,4 +44,9 @@ public class Transfer implements Response{
 		return ip;
 	}
 
+	@Override
+	public String getCommand() {
+		return "transfer";
+	}
+
 }

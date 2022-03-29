@@ -5,7 +5,8 @@ public enum CommandAction {
     CLOSE_CONNECTION("Close connection"),
     NOT_FOUND("Command not found"),
     INVALID_USAGE("Invalid usage"),
-    ERROR("Error");
+    ERROR("Error"), 
+    CHANGE_PASSWORD("Password changed");
 
     private String string;
 

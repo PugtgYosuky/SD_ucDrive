@@ -23,7 +23,6 @@ public class CmdChangePassword extends CommandHandler {
         String password = command.getArg(1);
         ClientThread client = command.getClient();
         client.getUser().setPassword(password);
-        client.sendMessage("Password changed. Please do login again");
         client.saveUsers();
         
         commandExecutor.getFileDispatcher().addFile(new SyncFile("accounts.txt", commandExecutor.getServer().getStoragePath() + "/config/accounts.txt", FileType.USER_DATA));

@@ -18,5 +18,10 @@ public class Message implements Response {
 	public void execute(ResponseHandler response) {
         response.execute(this);
 	}
+
+    @Override
+    public String getCommand() {
+        return this.message;
+    }
     
 }

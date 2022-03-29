@@ -100,7 +100,9 @@ public class ClientThread {
         while(true) {
             try {
 				String request = inputStream.readUTF();
-                if(commandExecutor.execute(new Command(this, request)) == CommandAction.CLOSE_CONNECTION)
+                CommandAction action = commandExecutor.execute(new Command(this, request));
+                System.out.println("Action: " + action);
+                if(action == CommandAction.CLOSE_CONNECTION)
                     break;
 			} catch (IOException e) {
                 break;

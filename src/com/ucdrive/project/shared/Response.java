@@ -8,4 +8,6 @@ public interface Response extends Serializable {
     
     public void execute(ResponseHandler response);
 
+    public String getCommand();
+
 }

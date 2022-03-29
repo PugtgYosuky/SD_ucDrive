@@ -7,13 +7,13 @@ import com.ucdrive.project.client.commands.CommandAction;
 import com.ucdrive.project.client.commands.CommandDescription;
 import com.ucdrive.project.client.commands.CommandHandler;
 
-@CommandDescription(prefix="logout", description = "Logout from the server")
-public class CmdLogout extends CommandHandler{
+@CommandDescription(prefix="change-password")
+public class CmdChangePassword extends CommandHandler{
 
-	@Override
-	public CommandAction parse(Command command) throws IOException {
-		commandExecutor.executeServerCommand(command);
-		return CommandAction.CLOSE_CONNECTION;
-	}
+    @Override
+    public CommandAction parse(Command command) throws IOException {
+        commandExecutor.executeServerCommand(command);
+        return CommandAction.CHANGE_PASSWORD;
+    }
     
 }
