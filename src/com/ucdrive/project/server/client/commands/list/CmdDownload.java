@@ -20,7 +20,7 @@ public class CmdDownload extends CommandHandler {
     @Override
     public CommandAction parse(Command command) throws IOException {
         ClientThread clientThread = command.getClient();
-        if(command.getArgsLength() < 2){
+        if(command.getArgsLength() < 3){
             clientThread.sendMessage("Invalid usage. Use: download <filename>");
             return CommandAction.INVALID_USAGE;
         }
@@ -37,7 +37,7 @@ public class CmdDownload extends CommandHandler {
         if(file.exists()){
             RequestFile requestFile = new RequestFile(user, filePath, RequestType.DOWNLOAD, fileName);
             ServerFTP.getRequestDispatcher().addRequest(requestFile);
-            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.DOWNLOAD, ServerFTP.getIp(), ""));
+            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.DOWNLOAD, ServerFTP.getIp(), command.getArg(2)));
             return CommandAction.SUCCESS;
         }
         
