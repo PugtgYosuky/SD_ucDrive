@@ -14,6 +14,8 @@ import com.ucdrive.project.client.commands.CommandAction;
 import com.ucdrive.project.client.commands.CommandExecutor;
 import com.ucdrive.project.client.commands.CommandHandler;
 import com.ucdrive.project.client.response.ResponseHandler;
+import com.ucdrive.project.client.transfer.TransferDispatcher;
+import com.ucdrive.project.client.transfer.TransferThread;
 import com.ucdrive.project.shared.Response;
 
 public class Client {
@@ -56,7 +58,8 @@ public class Client {
         System.out.println("Insert password: ");
         this.password = scanner.nextLine();
     }
-    public boolean readCommands(Scanner scanner, ResponseHandler responseHandler){
+    
+    public boolean readCommands(Scanner scanner, ResponseHandler responseHandler, TransferDispatcher transferDispatcher) {
         int failOvers = 0, maxFailOvers = 10;
         String command = "";
         while(failOvers < maxFailOvers) {
@@ -93,6 +96,8 @@ public class Client {
 
                 ReadThread readThread = new ReadThread(inputStream, responseHandler);
                 readThread.start();
+                TransferThread transferThread = new TransferThread(transferDispatcher);
+                transferThread.start();
 
                 while(true) {
                     if(command.isEmpty())
@@ -101,12 +106,14 @@ public class Client {
                     switch(commandAction) {
                         case RETRY:
                             readThread.interrupt();
+                            transferThread.interrupt();
                             inputStream.close();
                             outputStream.close();
                             break;
                         case CLOSE_CONNECTION:
-                            readThread.interrupt();
                             System.out.println("Client closed");
+                            readThread.interrupt();
+                            transferThread.interrupt();
                             inputStream.close();
                             outputStream.close();
                             command = "";
@@ -114,6 +121,7 @@ public class Client {
                         case CHANGE_PASSWORD:
                             System.out.println("Password changed");
                             readThread.interrupt();
+                            transferThread.interrupt();
                             inputStream.close();
                             outputStream.close();
                             command = "";
@@ -137,13 +145,14 @@ public class Client {
     }
 
     public void run() {
-        ResponseHandler responseHandler = new ResponseHandler(this);
+        TransferDispatcher transferDispatcher = new TransferDispatcher();
+        ResponseHandler responseHandler = new ResponseHandler(this, transferDispatcher);
         
         try (Scanner scanner = new Scanner(System.in)) {
             while(true) {
                 login(scanner);
 
-                if(!readCommands(scanner, responseHandler))
+                if(!readCommands(scanner, responseHandler, transferDispatcher))
                     return;
             }
 		}

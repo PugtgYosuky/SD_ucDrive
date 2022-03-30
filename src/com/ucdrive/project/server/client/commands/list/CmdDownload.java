@@ -38,7 +38,6 @@ public class CmdDownload extends CommandHandler {
             RequestFile requestFile = new RequestFile(user, filePath, RequestType.DOWNLOAD, fileName);
             ServerFTP.getRequestDispatcher().addRequest(requestFile);
             clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.DOWNLOAD, ServerFTP.getIp()));
-            clientThread.sendMessage("Download concluded");
             return CommandAction.SUCCESS;
         }
         
