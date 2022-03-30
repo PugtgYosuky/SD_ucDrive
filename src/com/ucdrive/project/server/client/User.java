@@ -1,11 +1,16 @@
 package com.ucdrive.project.server.client;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
+import com.ucdrive.project.server.ftp.sync.FileType;
+import com.ucdrive.project.server.ftp.sync.SyncFile;
 
 public class User implements Serializable {
 
@@ -22,7 +27,8 @@ public class User implements Serializable {
     private boolean isConnected;
 
     public User(String username, String password, String department,
-                  String college, String address, String phoneNumber, String numberCC, Date dateCC, String path, String diskPath) {
+                  String college, String address, String phoneNumber, String numberCC, Date dateCC, 
+                  String path, String diskPath, FileDispatcher fileDispatcher) {
         this.username = username;
         this.password = password;
         this.department = department;
@@ -34,19 +40,17 @@ public class User implements Serializable {
         this.path = path;
         this.diskPath = diskPath;
         this.isConnected = false;
-        this.ensurePath();
+    
+        this.ensurePath(fileDispatcher);
     }
     
     public String getAbsolutePath() {
         return this.diskPath + "/disk/users/" + username + this.path;
     }
 
-    private void ensurePath() {
-        try {
-            Files.createDirectories(Paths.get(getAbsolutePath()));
-        } catch (IOException e) {
-            // The path already exists
-        }
+    private void ensurePath(FileDispatcher fileDispatcher) {
+        fileDispatcher.addFile(new SyncFile(username + "/home", this.diskPath + "/disk/users/" + username + this.path, FileType.DIRECTORY));
+        new File(getAbsolutePath()).mkdirs();
     }
 
     public synchronized boolean getIsConnected() {

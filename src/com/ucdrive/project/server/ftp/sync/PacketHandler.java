@@ -22,7 +22,7 @@ public class PacketHandler {
 
     public int execute(FilePacket file) throws IOException {
         if(!file.getIsBinaryFile()) {
-            new File(server.getStoragePath() + file.getLocation() + file.getPath()).mkdir();
+            new File(server.getStoragePath() + file.getLocation() + file.getPath()).mkdirs();
             return 2;
         }
 
@@ -40,7 +40,7 @@ public class PacketHandler {
         currentIndex++;
         if(currentIndex == 1) {
             System.out.println("Received file: " + file.getPath());
-            fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + file.getLocation() + file.getPath()));
+            fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + "/disk/users/" + file.getPath()));
         }
 
         int next = currentIndex + 1;

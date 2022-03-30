@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 import com.ucdrive.project.server.client.User;
+import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class UserData {
     
@@ -20,7 +21,7 @@ public class UserData {
 
 
     // Initializing the users Vector and the path.
-    public UserData(String path) {
+    public UserData(String path, FileDispatcher fileDispatcher) {
         this.users = new Vector<>();
         this.path = path + "/config/accounts.txt";
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.path))) {
@@ -30,7 +31,7 @@ public class UserData {
             while((line = bufferedReader.readLine()) != null && line.length() > 0) {;  
                 data = line.split(";");
                 try {
-                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7]), data[8], path));
+                    users.add(new User(data[0], data[1], data[2], data[3], data[4], data[5], data[6], new SimpleDateFormat("dd/MM/yyyy").parse(data[7]), data[8], path, fileDispatcher));
                 } catch (ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

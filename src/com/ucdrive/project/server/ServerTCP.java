@@ -27,7 +27,7 @@ public class ServerTCP extends Thread {
         this.serverPort = serverPort;
         this.ip = ip;
         clients = new Vector<>();
-        userData = new UserData(path);
+        userData = new UserData(path, fileDispatcher);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
         try {
             this.commandExecutor = new CommandExecutor(fileDispatcher, server);
