@@ -20,6 +20,7 @@ public class CmdUpload extends CommandHandler{
         String path = commandExecutor.getClient().getPath() + "/" + command.getArg(1);
         File file = new File(path);
         if(file.exists() && !file.isDirectory()) {
+            command.setCommand(command.getCommand() + " " + path);
             commandExecutor.executeServerCommand(command);
             return CommandAction.SUCCESS;
         }else if (file.isDirectory()){

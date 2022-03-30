@@ -25,6 +25,10 @@ public class Command {
         return this.command;
     }
 
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
     public String getPrefix() {
         return this.args[0];
     }

@@ -19,7 +19,7 @@ public class CmdUpload extends CommandHandler {
     @Override
     public CommandAction parse(Command command) throws IOException {
         ClientThread clientThread = command.getClient();
-        if(command.getArgsLength() < 2){
+        if(command.getArgsLength() < 3){
             clientThread.sendMessage("Invalid usage. Use: upload <filename>");
             return CommandAction.INVALID_USAGE;
         }
@@ -29,7 +29,7 @@ public class CmdUpload extends CommandHandler {
 
         RequestFile requestFile = new RequestFile(user, filePath, RequestType.UPLOAD, fileName);
         ServerFTP.getRequestDispatcher().addRequest(requestFile);
-        clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.UPLOAD, ServerFTP.getIp()));
+        clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.UPLOAD, ServerFTP.getIp(), command.getArg(2)));
         clientThread.sendMessage("Upload concluded");
 
         return CommandAction.SUCCESS;

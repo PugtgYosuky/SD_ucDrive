@@ -11,13 +11,15 @@ public class Transfer implements Response{
 	private int port;
 	private RequestType type;
 	private InetAddress ip;
+	private String clientPath;
 	
-	public Transfer(String id, String filename, int port, RequestType type, InetAddress ip){
+	public Transfer(String id, String filename, int port, RequestType type, InetAddress ip, String clientPath){
 		this.id = id;
 		this.filename = filename;
 		this.port = port;
 		this.type = type;
 		this.ip = ip;
+		this.clientPath = clientPath;
 	}
 	@Override
 	public void execute(ResponseHandler response) {
@@ -42,6 +44,10 @@ public class Transfer implements Response{
 
 	public InetAddress getIp() {
 		return ip;
+	}
+
+	public String getClientPath(){
+		return this.clientPath;
 	}
 
 	@Override

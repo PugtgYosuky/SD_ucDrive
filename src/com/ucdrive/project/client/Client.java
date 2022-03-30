@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import com.ucdrive.project.client.commands.Command;
@@ -17,6 +19,7 @@ import com.ucdrive.project.client.response.ResponseHandler;
 import com.ucdrive.project.client.transfer.TransferDispatcher;
 import com.ucdrive.project.client.transfer.TransferThread;
 import com.ucdrive.project.shared.Response;
+import com.ucdrive.project.shared.Transfer;
 
 public class Client {
 
@@ -60,6 +63,7 @@ public class Client {
     }
     
     public boolean readCommands(Scanner scanner, ResponseHandler responseHandler, TransferDispatcher transferDispatcher) {
+        Queue<Command> remainingCommands = new LinkedList<>();
         int failOvers = 0, maxFailOvers = 10;
         String command = "";
         while(failOvers < maxFailOvers) {
@@ -93,11 +97,23 @@ public class Client {
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+                
+
+                while(transferDispatcher.getSize() != 0) {
+                    Transfer transfer = transferDispatcher.getTransfer();
+                    
+                    remainingCommands.add(new Command(transfer.getType().toString() + " " + transfer.getFilename() + " " + transfer.getClientPath(), this));
+
+                    transferDispatcher.removeTransfer();
+                }
 
                 ReadThread readThread = new ReadThread(inputStream, responseHandler);
                 readThread.start();
                 TransferThread transferThread = new TransferThread(transferDispatcher);
                 transferThread.start();
+
+                while(!remainingCommands.isEmpty())
+                    commandExecutor.executeServerCommand(remainingCommands.poll());
 
                 while(true) {
                     if(command.isEmpty())
@@ -146,7 +162,7 @@ public class Client {
 
     public void run() {
         TransferDispatcher transferDispatcher = new TransferDispatcher();
-        ResponseHandler responseHandler = new ResponseHandler(this, transferDispatcher);
+        ResponseHandler responseHandler = new ResponseHandler(transferDispatcher);
         
         try (Scanner scanner = new Scanner(System.in)) {
             while(true) {

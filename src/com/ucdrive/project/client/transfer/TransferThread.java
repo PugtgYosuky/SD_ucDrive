@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.ucdrive.project.client.structures.Pair;
 import com.ucdrive.project.server.ftp.RequestType;
 import com.ucdrive.project.shared.Transfer;
 
@@ -20,8 +19,8 @@ public class TransferThread extends Thread {
         this.transferDispatcher = transferDispatcher;
     }
 
-    public boolean uploadFile(Transfer transfer, DataOutputStream outputStream, DataInputStream inputStream, String path) {
-        try (DataInputStream fileData = new DataInputStream(new FileInputStream(path + "/" + transfer.getFilename()))) {
+    public boolean uploadFile(Transfer transfer, DataOutputStream outputStream, DataInputStream inputStream) {
+        try (DataInputStream fileData = new DataInputStream(new FileInputStream(transfer.getClientPath()))) {
             byte[] bytes = new byte[1024];
 
             int read;
@@ -39,14 +38,13 @@ public class TransferThread extends Thread {
             fileData.close();
             return true;
         } catch(IOException exc) {
-            System.out.println("Problem while sending files. Please do again");
-            exc.printStackTrace();
+            System.out.println("Problem while sending files. Please do it again");
             return false;
         }
     }
 
-    public boolean downloadFile(Transfer transfer, DataOutputStream outputStream, DataInputStream inputStream, String path) {
-        File file = new File(path + "/" + transfer.getFilename());
+    public boolean downloadFile(Transfer transfer, DataOutputStream outputStream, DataInputStream inputStream) {
+        File file = new File(transfer.getClientPath());
         try (DataOutputStream fileData = new DataOutputStream(new FileOutputStream(file))){
             byte[] bytes = new byte[1024];
 
@@ -65,25 +63,30 @@ public class TransferThread extends Thread {
         }
     }
 
-    public void handleTransfer(Transfer transfer, String path) {
+    public boolean handleTransfer(Transfer transfer) {
         try (Socket socket = new Socket(transfer.getIp(), transfer.getPort());
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
 
             outputStream.writeUTF(transfer.getId());
             if(inputStream.readBoolean()){
-                if(transfer.getType() == RequestType.UPLOAD)
-                    uploadFile(transfer, outputStream, inputStream, path);
-                else
-                    downloadFile(transfer, outputStream, inputStream, path);
+                if(transfer.getType() == RequestType.UPLOAD) {
+                    if(!uploadFile(transfer, outputStream, inputStream))
+                        return false;
+                } else {
+                    if(!downloadFile(transfer, outputStream, inputStream))
+                        return false;
+                }
             }
 
             outputStream.close();
             inputStream.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Transfer handler lost connection");
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -101,8 +104,10 @@ public class TransferThread extends Thread {
                 }
             }
             while(transferDispatcher.getSize() != 0) {
-                Pair<Transfer, String> transfer = transferDispatcher.getTransfer();
-                handleTransfer(transfer.first, transfer.second);
+                Transfer transfer = transferDispatcher.getTransfer();
+                if(!handleTransfer(transfer))
+                    return;
+
                 transferDispatcher.removeTransfer();
             }
         }
