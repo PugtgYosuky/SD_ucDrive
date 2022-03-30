@@ -2,6 +2,7 @@ package com.ucdrive.project.client.response;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,20 +32,27 @@ public class ResponseHandler {
             int read;
 
             while((read = fileData.read(bytes)) != -1) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 outputStream.write(bytes, 0, read);
             }
             
             fileData.close();
             return true;
         } catch(IOException exc) {
+            System.out.println("Problem while sending files. Please do again");
             exc.printStackTrace();
-
             return false;
         }
     }
 
     public boolean downloadFile(Transfer transfer, DataOutputStream outputStream, DataInputStream inputStream) {
-        try (DataOutputStream fileData = new DataOutputStream(new FileOutputStream(client.getPath() + "/" + transfer.getFilename()))) {
+        File file = new File(client.getPath() + "/" + transfer.getFilename());
+        try (DataOutputStream fileData = new DataOutputStream(new FileOutputStream(file))){
             byte[] bytes = new byte[1024];
 
             int read;
@@ -52,12 +60,11 @@ public class ResponseHandler {
             while((read = inputStream.read(bytes)) != -1) {
                 fileData.write(bytes, 0, read);
             }
-
             fileData.close();
             return true;
         } catch(IOException exc) {
-            exc.printStackTrace();
-
+            System.out.println("Error while downloading a file");
+            file.delete();
             return false;
         }
     }

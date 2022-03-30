@@ -98,23 +98,33 @@ public class Client {
                     if(command.isEmpty())
                         command = scanner.nextLine();
                     CommandAction commandAction = commandExecutor.execute(new Command(command, this));
-                    command = "";
                     switch(commandAction) {
+                        case RETRY:
+                            readThread.interrupt();
+                            inputStream.close();
+                            outputStream.close();
+                            break;
                         case CLOSE_CONNECTION:
                             readThread.interrupt();
                             System.out.println("Client closed");
                             inputStream.close();
                             outputStream.close();
+                            command = "";
                             return false;
                         case CHANGE_PASSWORD:
                             System.out.println("Password changed");
                             readThread.interrupt();
                             inputStream.close();
                             outputStream.close();
+                            command = "";
                             return true;
                         default:
+                            command = "";
                             break;
                     }
+
+                    if(commandAction == CommandAction.RETRY)
+                        break;
                 }
             } catch (IOException exc) {
                 System.out.println("Lost connection with the server. Trying to reconnect...");

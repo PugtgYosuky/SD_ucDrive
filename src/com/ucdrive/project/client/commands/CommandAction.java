@@ -6,7 +6,8 @@ public enum CommandAction {
     NOT_FOUND("Command not found"),
     INVALID_USAGE("Invalid usage"),
     ERROR("Error"), 
-    CHANGE_PASSWORD("Password changed");
+    CHANGE_PASSWORD("Password changed"),
+    RETRY("Retry to connect");
 
     private String string;
 

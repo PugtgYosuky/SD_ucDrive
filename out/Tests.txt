@@ -5,4 +5,3 @@
 - ter um cliente conectado e tentar reconectar
 - Limitar a threadpool a 2 threads e tentar conectar 3 clientes em simultaneo
 - fazer com que o tempo de resposta seja superior ao timeout para simular a congestao da rede
-- fechar o servidor enquando ele está a enviar um ficheiro para o cliente, vice-versa

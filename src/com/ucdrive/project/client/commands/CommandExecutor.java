@@ -59,9 +59,9 @@ public class CommandExecutor {
                     try {
                         return commandHandler.parse(command);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        // in case we lost connection to the server, we try to reconnect again
+                        return CommandAction.RETRY;
                     }
-                    return null;
                 });
             }
         }

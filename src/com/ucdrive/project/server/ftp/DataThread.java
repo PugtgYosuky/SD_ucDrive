@@ -2,6 +2,7 @@ package com.ucdrive.project.server.ftp;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class DataThread {
     
             int read;
             
-            while((read = fileData.read(bytes)) != -1) {    
+            while((read = fileData.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
 
@@ -53,7 +54,8 @@ public class DataThread {
     private boolean uploadFile(RequestFile requestFile) {
         User user = requestFile.getUser();
         String path = user.getUsername() + user.getPath() + "/" + requestFile.getFileName();
-        try (DataOutputStream fileData = new DataOutputStream(new FileOutputStream(requestFile.getPath()))) {
+        File file = new File(requestFile.getPath());
+        try (DataOutputStream fileData = new DataOutputStream(new FileOutputStream(file))) {
             byte [] bytes = new byte [1024];
             int read;
             while((read = inputStream.read(bytes)) != -1) {
@@ -64,10 +66,10 @@ public class DataThread {
             System.out.println("ADD FILE TO FILE DISPATCHER: " + path + " - " + requestFile.getPath());
             SyncFile syncFile = new SyncFile(path, requestFile.getPath(), FileType.BINARY);
             fileDispatcher.addFile(syncFile);
-            
-            
             return true;
         } catch(IOException exc) {
+            System.out.println("Error while uploading a file");
+            file.delete();
             return false;
         }       
     }

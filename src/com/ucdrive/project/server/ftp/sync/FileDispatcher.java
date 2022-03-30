@@ -16,14 +16,10 @@ public class FileDispatcher {
     }
 
     public void addFile(SyncFile file) {
-        System.out.println("Bruh");
         synchronized(udpSynchronized) {
-            System.out.println("ALJDWAKDAGIDAG");
             this.queue.add(file);
             System.out.println("File added to the queue");
-            System.out.println("Before notify");
             udpSynchronized.notifyAll();
-            System.out.println("Notify all");
         }
     }
     
