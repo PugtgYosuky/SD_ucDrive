@@ -40,7 +40,7 @@ public class PacketHandler {
         currentIndex++;
         if(currentIndex == 1) {
             System.out.println("Received file: " + file.getPath());
-            fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + "/disk/users/" + file.getPath()));
+            fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + file.getLocation() + file.getPath()));
         }
 
         int next = currentIndex + 1;
