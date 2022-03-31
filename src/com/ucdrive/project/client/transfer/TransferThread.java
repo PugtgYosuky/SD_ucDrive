@@ -26,12 +26,6 @@ public class TransferThread extends Thread {
             int read;
 
             while((read = fileData.read(bytes)) != -1) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
                 outputStream.write(bytes, 0, read);
             }
             System.out.println("Upload of "+ transfer.getFilename() + " concluded");
@@ -98,8 +92,7 @@ public class TransferThread extends Thread {
                     try {
                         transferDispatcher.wait();
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        return;
                     }
                 }
             }
