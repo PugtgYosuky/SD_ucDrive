@@ -1,9 +1,8 @@
-package com.ucdrive.project.client;
+package com.ucdrive.project.client.response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import com.ucdrive.project.client.response.ResponseHandler;
 import com.ucdrive.project.shared.Response;
 
 public class ReadThread extends Thread {
