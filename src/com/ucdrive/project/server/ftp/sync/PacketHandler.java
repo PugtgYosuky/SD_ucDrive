@@ -10,12 +10,14 @@ import com.ucdrive.project.server.Server;
 
 public class PacketHandler {
 
+    private File file;
     private DataOutputStream fileData;
     private int currentIndex;
     private Server server;
 
     public PacketHandler(Server server) {
         this.fileData = null;
+        this.file = null;
         this.currentIndex = 0;
         this.server = server;
     }
@@ -40,19 +42,32 @@ public class PacketHandler {
         currentIndex++;
         if(currentIndex == 1) {
             System.out.println("Received file: " + file.getPath());
-            fileData = new DataOutputStream(new FileOutputStream(server.getStoragePath() + file.getLocation() + file.getPath()));
+            this.file = new File(server.getStoragePath() + file.getLocation() + file.getPath());
+            this.fileData = new DataOutputStream(new FileOutputStream(this.file));
         }
 
         int next = currentIndex + 1;
 
-        fileData.write(file.getBuffer(), 0, file.getBufferLength());
+        this.fileData.write(file.getBuffer(), 0, file.getBufferLength());
 
         if(file.getIndex() == file.getTotalPackets()) {
+            this.file = null;
             fileData.close();
             currentIndex = 0;
         }
 
         return next;
+    }
+
+    public void deleteFile() {
+        if(this.file != null) {
+            try {
+                this.fileData.close();
+                this.file.delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

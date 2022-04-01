@@ -196,9 +196,9 @@ public class UDPSynchronized extends Thread{
     }
     
     public void receiveFiles() {
-        int nextIndex;
+        int nextIndex, failOvers = 0;
         PacketHandler packetHandler = new PacketHandler(server);
-        while(true){
+        while(failOvers < server.getHeartbeats()){
             try {
                 byte [] buffer = new byte [PACKET_SIZE * 2];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -215,18 +215,19 @@ public class UDPSynchronized extends Thread{
                 outputStream.close();
                 byteOutputStream.close();
                 socket.send(new DatagramPacket(acknowledge, acknowledge.length, server.getOtherIp(), server.getOtherSynchronizePort()));
-
+                failOvers = 0;
             } catch(SocketTimeoutException exc) {
+                failOvers++;
                 if(server.getPrimaryServer())
                     return;
             } catch (IOException exc) {
-                exc.printStackTrace();
                 System.out.println("Exception");
             } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+
+        packetHandler.deleteFile();
     }
 
     @Override
@@ -236,7 +237,6 @@ public class UDPSynchronized extends Thread{
                 //System.out.println("File dispacher size: " + fileDispatcher.getSize());
                 synchronized(this) {
                     while(fileDispatcher.getSize() == 0) {
-                        System.out.println("Waiting for files...");
                         try {
                             this.wait();
                         } catch (InterruptedException e) {
@@ -249,7 +249,6 @@ public class UDPSynchronized extends Thread{
                 System.out.println("Trying to send files...");
                 sendFiles();
             } else {
-                System.out.println("Waiting for files...");
                 receiveFiles();
             }
         }
