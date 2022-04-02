@@ -17,6 +17,9 @@ import com.ucdrive.project.server.Server;
 import com.ucdrive.project.server.ServerFTP;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
+/**
+ * The command executor is responsible for executing commands sent by the client
+ */
 public class CommandExecutor {
 
     private Map<String, Function<Command, CommandAction>> commands;
@@ -78,22 +81,47 @@ public class CommandExecutor {
         }
     }
 
+    /**
+     * Returns the server FTP object
+     * 
+     * @return The serverFTP object.
+     */
     public ServerFTP getServerFTP() {
         return serverFTP;
     }
 
+   /**
+    * Get the file dispatcher
+    * 
+    * @return The FileDispatcher object.
+    */
     public FileDispatcher getFileDispatcher() {
         return fileDispatcher;
     }
 
+    /**
+     * Set the file dispatcher
+     * 
+     * @param fileDispatcher The FileDispatcher object 
+     */
     public void setFileDispatcher(FileDispatcher fileDispatcher) {
         this.fileDispatcher = fileDispatcher;
     }
 
+    /**
+     * Return the server object
+     * 
+     * @return The server object.
+     */
     public Server getServer() {
         return server;
     }
 
+    /**
+     * Sets the server property 
+     * 
+     * @param server The server 
+     */
     public void setServer(Server server) {
         this.server = server;
     }
@@ -111,7 +139,7 @@ public class CommandExecutor {
      * If the command is found, execute it. Otherwise, return a CommandAction.NOT_FOUND
      * 
      * @param command The command that was sent by the client.
-     * @return Nothing.
+     * @return CommandAction
      */
     public CommandAction execute(Command command) {
         if(this.commands.get(command.getPrefix()) == null) {

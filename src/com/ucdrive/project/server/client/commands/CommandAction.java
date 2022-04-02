@@ -1,6 +1,7 @@
 package com.ucdrive.project.server.client.commands;
 
 
+// A Java enum.
 public enum CommandAction {
 
 

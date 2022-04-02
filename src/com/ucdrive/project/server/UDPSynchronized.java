@@ -21,6 +21,10 @@ import com.ucdrive.project.server.ftp.sync.PacketHandler;
 import com.ucdrive.project.server.ftp.sync.SyncFile;
 import com.ucdrive.project.server.ftp.sync.SyncPacket;
 
+/**
+ * The UDPSynchronized class is a thread that is responsible for sending and receiving files from the
+ * other server
+ */
 public class UDPSynchronized extends Thread{
     private Server server;
     private FileDispatcher fileDispatcher;
@@ -28,6 +32,8 @@ public class UDPSynchronized extends Thread{
     private final int PACKET_SIZE = 16384;
     private DatagramSocket socket;
 
+    // This is the constructor of the UDPSynchronized class. It creates a new DatagramSocket and sets
+    // the timeout to the value specified in the server object.
     public UDPSynchronized(Server server) throws SocketException {
         this.server = server;
         this.socket = new DatagramSocket(server.getSynchronizePort(), server.getMyIp());
@@ -51,8 +57,16 @@ public class UDPSynchronized extends Thread{
         this.fileDispatcher = fileDispatcher;
     }
 
+    /**
+     * Send a file to the other server
+     * 
+     * @param syncFile The file to be sent.
+     * @param path The path to the file to be sent.
+     * @return A boolean with the result
+     */
     public boolean sendBinaryFile(SyncFile syncFile, String path) {
         try {
+
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE * 2], PACKET_SIZE * 2);
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteOutputStream);
@@ -73,6 +87,8 @@ public class UDPSynchronized extends Thread{
                 byte [] buffer = byteOutputStream.toByteArray();
                 packet = new DatagramPacket(buffer, buffer.length, server.getOtherIp(), server.getOtherSynchronizePort());
                 
+                // The above code is sending a packet to the server and receiving an acknowledgement.
+                // If the acknowledgement is not received, the code will retry sending the packet until it reaches the max failOvers possibles
                 while(failOvers < server.getHeartbeats()) {
                     try {
                         socket.send(packet);
@@ -85,6 +101,7 @@ public class UDPSynchronized extends Thread{
                         byteArrayInputStream.close();
                         inputStream.close();
 
+                        // This is skipping the bytes that were sent
                         if(nextIndex-(i+1) > 0) {
                             fileData.skipBytes((nextIndex-(i+1)) * PACKET_SIZE);
                             i = nextIndex;
@@ -97,6 +114,9 @@ public class UDPSynchronized extends Thread{
                     }
                 }
 
+                // This is checking if the failOvers is equal to the number of heartbeats. If it is, it
+                // means that the server is not responding. So, it closes the file and the streams and
+                // returns false.
                 if(failOvers == server.getHeartbeats()){
                     fileData.close();
                     outputStream.close();
@@ -117,6 +137,13 @@ public class UDPSynchronized extends Thread{
 
         return true;
     }
+    /**
+     * Send a folder to the other server
+     * 
+     * @param file The folder to send
+     * @param path The path of the folder to be sent.
+     * @return A boolean with the result
+     */
     public boolean sendFolder(SyncFile file, String path) {
         try {
             DatagramPacket packet, acknowledge = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
@@ -128,6 +155,9 @@ public class UDPSynchronized extends Thread{
             byte [] buffer = byteOutputStream.toByteArray();
             packet = new DatagramPacket(buffer, buffer.length, server.getOtherIp(), server.getOtherSynchronizePort());
             
+            // Sends a packet to the server and waits for an acknowledgement.
+            // If the server doesn't respond, it will increment the failOvers variable and try again.
+            // If the failOvers variable reaches the number of heartbeats, exits.
             while(failOvers < server.getHeartbeats()) {
                 try {
                     socket.send(packet);
@@ -150,9 +180,13 @@ public class UDPSynchronized extends Thread{
         return true;
     }
 
+    /**
+     * Tries to send all the files in the FileDispatcher to the other server
+     */
     public void sendFiles() {
         SyncFile file;
 
+        // Sends files to the other server
         while((file = fileDispatcher.getFile()) != null) {
             System.out.println("SENDING: " + file.getPath());
             if(file.getType() == FileType.BINARY) {
@@ -195,20 +229,22 @@ public class UDPSynchronized extends Thread{
         }
     }
     
+    // Receiving files from the primary server.
     public void receiveFiles() {
         int nextIndex, failOvers = 0;
         PacketHandler packetHandler = new PacketHandler(server);
         while(failOvers < server.getHeartbeats()){
             try {
                 byte [] buffer = new byte [PACKET_SIZE * 2];
+                // Receiving a packet from the socket and execute it's handler.
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                 socket.receive(packet);
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer, 0, packet.getLength());
                 ObjectInputStream inputStream = new ObjectInputStream(byteArrayInputStream);
                 SyncPacket filePacket = (SyncPacket) inputStream.readObject();
-
                 nextIndex = filePacket.execute(packetHandler);
                 ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+                // Says to the primary server the next index it should send
                 DataOutputStream outputStream = new DataOutputStream(byteOutputStream);
                 outputStream.writeInt(nextIndex);
                 byte [] acknowledge = byteOutputStream.toByteArray();
@@ -218,6 +254,8 @@ public class UDPSynchronized extends Thread{
                 failOvers = 0;
             } catch(SocketTimeoutException exc) {
                 failOvers++;
+                // The above code is checking if the server is the primary server. If it is, then it
+                // will return.
                 if(server.getPrimaryServer())
                     return;
             } catch (IOException exc) {
@@ -230,8 +268,13 @@ public class UDPSynchronized extends Thread{
         packetHandler.deleteFile();
     }
 
+   /**
+    * If the server is the primary server, then it will send files to the secondary server.
+    * Otherwise, it will receive files from the primary server
+    */
     @Override
     public void run() {
+        // A server that receives files from clients and sends them to the clients.
         while(true){
             if(server.getPrimaryServer()){
                 //System.out.println("File dispacher size: " + fileDispatcher.getSize());
@@ -243,7 +286,6 @@ public class UDPSynchronized extends Thread{
                             e.printStackTrace();
                             return;
                         }
-                        System.out.println("I'M ALIVE");
                     }
                 }
                 System.out.println("Trying to send files...");

@@ -10,6 +10,9 @@ import com.ucdrive.project.server.storage.UserData;
 import com.ucdrive.project.shared.Message;
 import com.ucdrive.project.shared.Response;
 
+/**
+ * It reads a command from the client, executes it, and sends a response back to the client
+ */
 public class ClientThread {
 
     private User client;
@@ -20,6 +23,7 @@ public class ClientThread {
     private CommandExecutor commandExecutor;
 
     
+    // It creates a new instance of the class ClientThread.
     public ClientThread(Socket socket, UserData userData, CommandExecutor commandExecutor) throws IOException {
         this.socket = socket;
         this.userData = userData;
@@ -35,6 +39,11 @@ public class ClientThread {
         this.userData.saveUsers();
     }
     
+    /**
+     * Returns the user 
+     * 
+     * @return The user object.
+     */
     public User getUser() {
         return this.client;
     }
@@ -46,7 +55,6 @@ public class ClientThread {
      */
     public boolean authenticate() throws IOException {
         String s;
-        // TODO: ADD A TIMEOUT
         //sendMessage("Insert username: ");
         s = inputStream.readUTF();
 
@@ -57,6 +65,8 @@ public class ClientThread {
             return false;
         }
 
+        // It checks if the user is already connected. If it is, it sends a message to the client and
+        // closes the connection.
         if(client.getIsConnected()) {
             sendMessage("This user is already connected");
             client = null;
@@ -66,6 +76,8 @@ public class ClientThread {
         //sendMessage("Password: ");
         s = inputStream.readUTF();
 
+        // It checks if the password is correct. If it is, it sends a message to the client and
+        // sets the isConnected flag to true.
         if(s.equals(client.getPassword())) {
             sendMessage("You are now connected! :)");
 
@@ -77,20 +89,31 @@ public class ClientThread {
         return false;
     }
 
+    /**
+     * Send a message to the server
+     * 
+     * @param message The message to send to the server.
+     */
     public void sendMessage(String message) throws IOException {
         this.outputStream.writeObject(new Message(message));
     }
 
+    /**
+     * Send a response to the client
+     * 
+     * @param res The response to send.
+     */
     public void sendResponse(Response res) throws IOException {
         this.outputStream.writeObject(res);
     }
 
     /**
-     * Reads a command from the client, executes it, and sends a response back to the client
+     * Reads commands from the client, executes it, and sends a response back to the client
      */
     public void start() {
 
         try {
+            // It checks if the user is authenticated. If it is not, it closes the connection.
             if(!authenticate())
                 return;
         } catch(IOException exc) {
@@ -99,9 +122,11 @@ public class ClientThread {
 
         while(true) {
             try {
-				String request = inputStream.readUTF();
+				// It reads a command from the client, executes it, and sends a response back to the client.
+                String request = inputStream.readUTF();
                 CommandAction action = commandExecutor.execute(new Command(this, request));
                 System.out.println("Action: " + action);
+                // Closing the connection.
                 if(action == CommandAction.CLOSE_CONNECTION)
                     break;
 			} catch (IOException e) {

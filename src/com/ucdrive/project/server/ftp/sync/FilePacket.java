@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * This class represents a file that is to be sent to the server.
+ */
 public class FilePacket implements SyncPacket{
     private int index; // starts at 1
     private int totalPackets;
@@ -14,6 +17,7 @@ public class FilePacket implements SyncPacket{
     private String location;
     private byte [] checksum;
 
+    // This is the constructor for the FilePacket class. 
     public FilePacket(int index, int totalPackets, byte[] buffer, String path, boolean isBinaryFile, String location) {
         this.index = index;
         this.totalPackets = totalPackets;
@@ -23,6 +27,7 @@ public class FilePacket implements SyncPacket{
         this.location = location;
     }
     
+    // This is the constructor for the FilePacket class.
     public FilePacket (int index, int totalPackets, String path, boolean isBinaryFile, String location){
         this.index = index;
         this.totalPackets = totalPackets;
@@ -95,6 +100,12 @@ public class FilePacket implements SyncPacket{
         this.isBinaryFile = isBinaryFile;
     }
 
+    /**
+     * Calculate the MD5 checksum of the buffer
+     * 
+     * @param buffer The buffer to calculate the checksum for.
+     * @return The checksum.
+     */
     public byte[] calculateChecksum(byte[] buffer){
         byte [] checksum = null;
         try {
@@ -108,6 +119,12 @@ public class FilePacket implements SyncPacket{
         return checksum;
     }
 
+    /**
+     * This is the function that will be called by the server to execute the packet
+     * 
+     * @param packet The packet that is being processed.
+     * @return A integer
+     */
     @Override
     public int execute(PacketHandler packet) throws IOException {
         return packet.execute(this);

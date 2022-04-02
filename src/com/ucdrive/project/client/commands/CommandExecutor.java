@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 
 import com.ucdrive.project.client.Client;
 
+/**
+ * The class is responsible for executing the commands that are send to the server. It also contains
+ * the list of all the commands that are available to the client
+ */
 public class CommandExecutor {
 
     private Map<String, Function<Command, CommandAction>> commands;
@@ -23,12 +27,25 @@ public class CommandExecutor {
     private Client client;
     private DataOutputStream outputStream;
 
+    /**
+     * Given a package name, return a set of all the classes in that package
+     * 
+     * @param packageName The name of the package to search for classes.
+     * @return A set of classes.
+     */
     public Set<Class<?>> getPackageClasses(String packageName) {
         InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(packageName.replaceAll("[.]", "/"));
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         return reader.lines().filter(line -> line.endsWith(".class")).map(line -> getClass(line, packageName)).collect(Collectors.toSet());
     }
 
+    /**
+     * Given a class name and a package name, return the class object
+     * 
+     * @param className The name of the class to load.
+     * @param packageName The name of the package where the class is located.
+     * @return The class object.
+     */
     public Class<?> getClass(String className, String packageName) {
         try {
             return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf(".")));
@@ -67,15 +84,32 @@ public class CommandExecutor {
         }
     }
 
+    /**
+     * Returns a set of command descriptions
+     * 
+     * @return The set of command descriptions.
+     */
     public Set<CommandDescription> getCommands() {
         return this.commandDescriptions;
     }
 
+    /**
+     * Send the command to the server
+     * 
+     * @param command The command that was sent by the client.
+     * @return CommandAction.SUCCESS
+     */
     public CommandAction executeServerCommand(Command command) throws IOException {
         outputStream.writeUTF(command.getCommand());
         return CommandAction.SUCCESS;
     }
 
+    /**
+     * If the command is a server command, sends it. Otherwise, executes it
+     * 
+     * @param command The command that was sent by the user.
+     * @return The CommandAction object that is created by the parse method or CommandAction.SUCESS
+     */
     public CommandAction execute(Command command) throws IOException {
         if(this.commands.get(command.getPrefix()) == null) {
             return executeServerCommand(command);
@@ -84,6 +118,11 @@ public class CommandExecutor {
         }
     }
     
+    /**
+     * It returns the client object.
+     * 
+     * @return The client object.
+     */
     public Client getClient(){
         return client;
     }

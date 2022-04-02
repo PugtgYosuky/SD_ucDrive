@@ -8,10 +8,19 @@ import com.ucdrive.project.client.commands.CommandAction;
 import com.ucdrive.project.client.commands.CommandDescription;
 import com.ucdrive.project.client.commands.CommandHandler;
 
-@CommandDescription(prefix="local-ls", description="List file in current directory")
+/**
+ * List the files in the current directory
+ */
+@CommandDescription(prefix="local-ls", description="List the files in current directory")
 public class CmdList extends CommandHandler{
 
-	@Override
+	/**
+     * Prints the names of all files in the current directory
+     * 
+     * @param command The command that was parsed.
+     * @return CommandAction.SUCCESS
+     */
+    @Override
 	public CommandAction parse(Command command) throws IOException {
         String directory = command.getClient().getPath();
         File currentDirectory = new File(directory);

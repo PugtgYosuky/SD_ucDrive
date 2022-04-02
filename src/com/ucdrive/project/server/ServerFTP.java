@@ -11,6 +11,10 @@ import com.ucdrive.project.server.ftp.DataThread;
 import com.ucdrive.project.server.ftp.RequestDispatcher;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
+/**
+ * This class is responsible for accepting connections from clients to transfer files and dispatching them to a thread
+ * pool
+ */
 public class ServerFTP extends Thread{
 
     private final int BACKLOG = 100;
@@ -22,6 +26,7 @@ public class ServerFTP extends Thread{
     private FileDispatcher fileDispatcher;
     private Server server;
     
+    // This is the constructor of the class. It initializes the fields of the class.
     public ServerFTP(int serverPort, Server server, int maxThreads, FileDispatcher fileDispatcher) {
         this.serverPort = serverPort;
         this.server = server;
@@ -30,13 +35,24 @@ public class ServerFTP extends Thread{
         this.fileDispatcher = fileDispatcher;
     }
 
+    /**
+     * Returns the request dispatcher
+     * 
+     * @return The RequestDispatcher object.
+     */
     public RequestDispatcher getRequestDispatcher() {
         return this.requests;
     }
 
+    /**
+     * Accepts incoming connections and creates a new thread for each one
+     * 
+     * @param server The server socket that will accept connections.
+     */
     public void acceptRequests(ServerSocket server) throws IOException {
         while(true) {
             Socket socket = server.accept();
+            // It creates a new thread for each connection.
             pool.submit(() -> {
                 DataThread dataThread;
                 try {
@@ -64,8 +80,12 @@ public class ServerFTP extends Thread{
         return this.ip;
     }
     
+    /**
+     * Accepts incoming connections and creates a new thread to handle each connection
+     */
     @Override
     public void run() {
+        // It creates a new ServerSocket object and initializes it with the port number and the IP address of the server.
         try (ServerSocket server = new ServerSocket(serverPort, BACKLOG, this.server.getMyIp())) {
             ip = server.getInetAddress();
             port = server.getLocalPort();

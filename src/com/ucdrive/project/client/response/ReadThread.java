@@ -5,12 +5,15 @@ import java.io.ObjectInputStream;
 
 import com.ucdrive.project.shared.Response;
 
+/**
+ * It reads messages from the input stream and executes the appropriate handler
+ */
 public class ReadThread extends Thread {
 
     private ObjectInputStream inputStream;
     private ResponseHandler handler;
 
-    // This is the constructor of the ReadThread class. It takes two parameters: an ObjectInputStream
+    // Constructor of the ReadThread class. It takes two parameters: an ObjectInputStream
     // and a ResponseHandler.
     public ReadThread(ObjectInputStream inputStream, ResponseHandler handler) {
         this.inputStream = inputStream;
@@ -28,12 +31,12 @@ public class ReadThread extends Thread {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Read messages from the socket and put them into the queue.
-     */
+    
+    // A method that is called when the thread is started. It is used to read messages from the input
+    // stream and execute the appropriate handler.
     @Override
     public void run() {
+        // A loop that is executed until an exception is thrown.
         while(true) {
             try {
                 readMessages();

@@ -14,6 +14,9 @@ import com.ucdrive.project.server.client.commands.CommandExecutor;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
+/**
+ * The server is responsible for receiving and processing all the commands from the client
+ */
 public class Server {
 
     private boolean primaryServer;
@@ -28,6 +31,7 @@ public class Server {
     private int otherSynchronizePort;
     private String storagePath;
 
+    // A constructor. It is used to initialize the class variables.
     public Server(int heartbeats, int timeout, String myIp, String otherIp, int myTCPPort,
                  int myUDPPort, int otherUDPPort, int synchronizePort, int otherSynchronizePort,
                  String storagePath) throws UnknownHostException{
@@ -65,9 +69,11 @@ public class Server {
             e.printStackTrace();
         }
 
+        // In case th server is primary
         FileDispatcher fileDispatcher = serverUDP.getSynchronizedThread().getFileDispatcher();
 
         ServerFTP serverFTP = new ServerFTP(0, this,10, fileDispatcher);
+        // Creating a new instance of the `CommandExecutor` class.
         CommandExecutor commandExecutor;
         try {
             commandExecutor = new CommandExecutor(fileDispatcher, this, serverFTP);
@@ -78,8 +84,10 @@ public class Server {
         CommandHandler.commandExecutor = commandExecutor;
 
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, commandExecutor, 10, this.storagePath, fileDispatcher, this);
+        // It starts the TCP and FTP threads.
         serverTCP.start();
         serverFTP.start();
+        // Used to wait for the threads to finish.
         try {
             serverUDP.join();
             serverTCP.join();
@@ -177,13 +185,18 @@ public class Server {
         this.storagePath = storagePath;
     }
 
+    /**
+     * It reads the configuration file and starts the server
+     */
     public static void main(String[] args) {
         try {
             String configFile = args[0];
 
             File file = new File(configFile);
 
+            // Used to start the server.
             if(file.exists()) {
+                // Reading the server configurations file
                 BufferedReader buffer = new BufferedReader(new FileReader(file));
                 
                 String[] line = buffer.readLine().split(" ");
@@ -202,6 +215,7 @@ public class Server {
                 int heartbeats = Integer.parseInt(line[8]);
                 int timeout = Integer.parseInt(line[9]);
                 
+                // Used to start the server.
                 try {
                     Server server = new Server(heartbeats, timeout, ip, otherIp, portTCP, portUDP, otherUDPPort, synchronizePort, otherSynchronizePort, storagePath);
                     server.start();

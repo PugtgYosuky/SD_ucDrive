@@ -14,6 +14,9 @@ import java.util.Vector;
 import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
+/**
+ * This class is used to store all the users in the system
+ */
 public class UserData {
     
     private Vector<User> users;
@@ -28,6 +31,7 @@ public class UserData {
             String line;
             String[] data;
 
+            // Reading the file line by line and splitting the data into an array.
             while((line = bufferedReader.readLine()) != null && line.length() > 0) {;  
                 data = line.split(";");
                 try {

@@ -22,12 +22,14 @@ public class ServerTCP extends Thread {
     private UserData userData;
     private CommandExecutor commandExecutor;
     
+    // Constructor of the ServerTCP
     public ServerTCP(int serverPort, InetAddress ip, CommandExecutor commandExecutor, int maxThreads, String path, FileDispatcher fileDispatcher, Server server) {
         this.serverPort = serverPort;
         this.ip = ip;
         this.commandExecutor = commandExecutor;
         clients = new Vector<>();
         userData = new UserData(path, fileDispatcher);
+        // It creates a new thread pool executor with the specified number of threads.
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
     }
 
@@ -40,6 +42,7 @@ public class ServerTCP extends Thread {
         System.out.println("Server TCP started in " + ip + " with port: " + serverPort);
         while(true) {
             Socket socket = server.accept();
+            // It creates a new client thread and starts it.
             pool.submit(() -> {
                 ClientThread clientThread;
                 try {
@@ -63,6 +66,9 @@ public class ServerTCP extends Thread {
         }
     }
 
+    /**
+     * It creates a new server socket and starts accepting clients.
+     */
     @Override
     public void run() {
         try (ServerSocket server = new ServerSocket(serverPort)) {

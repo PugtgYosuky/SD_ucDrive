@@ -1,5 +1,6 @@
 package com.ucdrive.project.server.ftp;
 
+// A Java enum.
 public enum RequestType {
     
     UPLOAD("upload"), DOWNLOAD("download");

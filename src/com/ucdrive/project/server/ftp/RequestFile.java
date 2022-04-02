@@ -4,6 +4,12 @@ import java.util.UUID;
 
 import com.ucdrive.project.server.client.User;
 
+/**
+ * A RequestFile is a file that a user has requested to be uploaded/downloaded to/from the server
+ */
+/**
+ * A RequestFile is a file that a user has requested to be uploaded/downloaded to/from the server
+ */
 public class RequestFile {
     
     private String uniqueID;
@@ -12,6 +18,8 @@ public class RequestFile {
     private RequestType type;
     private String fileName;
     
+    // This is the constructor for the RequestFile class. It creates a new RequestFile object and sets
+    // the uniqueID, user, path, type, and fileName.
     public RequestFile (User user, String path, RequestType type, String fileName) {
         this.uniqueID = UUID.randomUUID().toString();
         this.user = user;
