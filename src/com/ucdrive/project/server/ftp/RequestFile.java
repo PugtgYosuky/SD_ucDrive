@@ -2,7 +2,7 @@ package com.ucdrive.project.server.ftp;
 
 import java.util.UUID;
 
-import com.ucdrive.project.server.client.User;
+import com.ucdrive.project.server.storage.User;
 
 public class RequestFile {
     

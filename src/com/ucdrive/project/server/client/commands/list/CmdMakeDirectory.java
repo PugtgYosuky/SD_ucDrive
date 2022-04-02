@@ -1,10 +1,10 @@
 package com.ucdrive.project.server.client.commands.list;
 
 import com.ucdrive.project.server.client.ClientThread;
-import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.*;
 import com.ucdrive.project.server.ftp.sync.FileType;
 import com.ucdrive.project.server.ftp.sync.SyncFile;
+import com.ucdrive.project.server.storage.User;
 
 import java.io.File;
 import java.io.IOException;

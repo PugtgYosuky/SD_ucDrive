@@ -6,6 +6,7 @@ import java.net.Socket;
 import com.ucdrive.project.server.client.commands.CommandExecutor;
 import com.ucdrive.project.server.client.commands.Command;
 import com.ucdrive.project.server.client.commands.CommandAction;
+import com.ucdrive.project.server.storage.User;
 import com.ucdrive.project.server.storage.UserData;
 import com.ucdrive.project.shared.Message;
 import com.ucdrive.project.shared.Response;

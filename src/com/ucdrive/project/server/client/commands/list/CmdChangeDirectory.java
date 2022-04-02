@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 
 import com.ucdrive.project.server.client.ClientThread;
-import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.Command;
 import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.sync.FileType;
 import com.ucdrive.project.server.ftp.sync.SyncFile;
+import com.ucdrive.project.server.storage.User;
 
 @CommandDescription(prefix="server-cd", description="Change current directory")
 public class CmdChangeDirectory extends CommandHandler{

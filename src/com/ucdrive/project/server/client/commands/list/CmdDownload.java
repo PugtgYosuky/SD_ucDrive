@@ -4,13 +4,13 @@ import java.io.File;
 import java.io.IOException;
 
 import com.ucdrive.project.server.client.ClientThread;
-import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.Command;
 import com.ucdrive.project.server.client.commands.CommandAction;
 import com.ucdrive.project.server.client.commands.CommandDescription;
 import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.RequestFile;
 import com.ucdrive.project.server.ftp.RequestType;
+import com.ucdrive.project.server.storage.User;
 import com.ucdrive.project.shared.Transfer;
 
 @CommandDescription(prefix="download", description="Download a file")

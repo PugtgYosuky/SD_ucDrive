@@ -11,7 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
-import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class UserData {

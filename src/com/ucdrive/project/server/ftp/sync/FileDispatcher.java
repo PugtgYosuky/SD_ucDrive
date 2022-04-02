@@ -3,8 +3,6 @@ package com.ucdrive.project.server.ftp.sync;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.ucdrive.project.server.UDPSynchronized;
-
 public class FileDispatcher {
 
     private Queue<SyncFile> queue;

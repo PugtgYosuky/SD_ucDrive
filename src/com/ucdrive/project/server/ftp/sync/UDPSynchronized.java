@@ -1,4 +1,4 @@
-package com.ucdrive.project.server;
+package com.ucdrive.project.server.ftp.sync;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,12 +14,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import com.ucdrive.project.server.ftp.sync.FileDispatcher;
-import com.ucdrive.project.server.ftp.sync.FilePacket;
-import com.ucdrive.project.server.ftp.sync.FileType;
-import com.ucdrive.project.server.ftp.sync.PacketHandler;
-import com.ucdrive.project.server.ftp.sync.SyncFile;
-import com.ucdrive.project.server.ftp.sync.SyncPacket;
+import com.ucdrive.project.server.Server;
 
 public class UDPSynchronized extends Thread{
     private Server server;

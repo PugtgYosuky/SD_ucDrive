@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ucdrive.project.server.Server;
-import com.ucdrive.project.server.ServerFTP;
+import com.ucdrive.project.server.ftp.ServerFTP;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class CommandExecutor {

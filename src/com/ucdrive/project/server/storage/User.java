@@ -1,4 +1,4 @@
-package com.ucdrive.project.server.client;
+package com.ucdrive.project.server.storage;
 
 import java.io.File;
 import java.io.Serializable;

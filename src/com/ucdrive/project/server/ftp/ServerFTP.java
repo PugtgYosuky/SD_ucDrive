@@ -1,4 +1,4 @@
-package com.ucdrive.project.server;
+package com.ucdrive.project.server.ftp;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -7,8 +7,7 @@ import java.net.Socket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import com.ucdrive.project.server.ftp.DataThread;
-import com.ucdrive.project.server.ftp.RequestDispatcher;
+import com.ucdrive.project.server.Server;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class ServerFTP extends Thread{

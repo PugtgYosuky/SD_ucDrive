@@ -8,10 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 import com.ucdrive.project.server.ftp.sync.FileType;
 import com.ucdrive.project.server.ftp.sync.SyncFile;
+import com.ucdrive.project.server.storage.User;
 
 public class DataThread {
     
