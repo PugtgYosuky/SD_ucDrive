@@ -14,10 +14,10 @@ import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 public class ServerFTP extends Thread{
 
     private final int BACKLOG = 100;
-    private static int port;
-    private static InetAddress ip;
+    private int port;
+    private InetAddress ip;
     private int serverPort;
-    private static RequestDispatcher requests;
+    private RequestDispatcher requests;
     private ThreadPoolExecutor pool;
     private FileDispatcher fileDispatcher;
     private Server server;
@@ -25,14 +25,13 @@ public class ServerFTP extends Thread{
     public ServerFTP(int serverPort, Server server, int maxThreads, FileDispatcher fileDispatcher) {
         this.serverPort = serverPort;
         this.server = server;
-        if(requests == null)
-            requests = new RequestDispatcher();
+        this.requests = new RequestDispatcher();
         this.pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
         this.fileDispatcher = fileDispatcher;
     }
 
-    public static RequestDispatcher getRequestDispatcher() {
-        return requests;
+    public RequestDispatcher getRequestDispatcher() {
+        return this.requests;
     }
 
     public void acceptRequests(ServerSocket server) throws IOException {
@@ -57,12 +56,12 @@ public class ServerFTP extends Thread{
         }
     }
 
-    public static int getPort() {
-        return port;
+    public int getPort() {
+        return this.port;
     }
 
-    public static InetAddress getIp() {
-        return ip;
+    public InetAddress getIp() {
+        return this.ip;
     }
     
     @Override

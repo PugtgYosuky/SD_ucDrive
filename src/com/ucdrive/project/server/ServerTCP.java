@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import com.ucdrive.project.server.client.ClientThread;
 import com.ucdrive.project.server.client.commands.CommandExecutor;
-import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 import com.ucdrive.project.server.storage.UserData;
 
@@ -23,18 +22,13 @@ public class ServerTCP extends Thread {
     private UserData userData;
     private CommandExecutor commandExecutor;
     
-    public ServerTCP(int serverPort, InetAddress ip, int maxThreads, String path, FileDispatcher fileDispatcher, Server server) {
+    public ServerTCP(int serverPort, InetAddress ip, CommandExecutor commandExecutor, int maxThreads, String path, FileDispatcher fileDispatcher, Server server) {
         this.serverPort = serverPort;
         this.ip = ip;
+        this.commandExecutor = commandExecutor;
         clients = new Vector<>();
         userData = new UserData(path, fileDispatcher);
         pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
-        try {
-            this.commandExecutor = new CommandExecutor(fileDispatcher, server);
-            CommandHandler.commandExecutor = this.commandExecutor;
-        } catch(Exception exc) {
-            exc.printStackTrace();
-        }
     }
 
     /**

@@ -2,7 +2,6 @@ package com.ucdrive.project.server.client.commands.list;
 
 import java.io.IOException;
 
-import com.ucdrive.project.server.ServerFTP;
 import com.ucdrive.project.server.client.ClientThread;
 import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.Command;
@@ -28,8 +27,8 @@ public class CmdUpload extends CommandHandler {
         String filePath = user.getAbsolutePath() + "/" + fileName;
 
         RequestFile requestFile = new RequestFile(user, filePath, RequestType.UPLOAD, fileName);
-        ServerFTP.getRequestDispatcher().addRequest(requestFile);
-        clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.UPLOAD, ServerFTP.getIp(), command.getArg(2)));
+        commandExecutor.getServerFTP().getRequestDispatcher().addRequest(requestFile);
+        clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, commandExecutor.getServerFTP().getPort(), RequestType.UPLOAD, commandExecutor.getServerFTP().getIp(), command.getArg(2)));
         clientThread.sendMessage("Upload concluded");
 
         return CommandAction.SUCCESS;

@@ -3,7 +3,6 @@ package com.ucdrive.project.server.client.commands.list;
 import java.io.File;
 import java.io.IOException;
 
-import com.ucdrive.project.server.ServerFTP;
 import com.ucdrive.project.server.client.ClientThread;
 import com.ucdrive.project.server.client.User;
 import com.ucdrive.project.server.client.commands.Command;
@@ -36,8 +35,8 @@ public class CmdDownload extends CommandHandler {
 
         if(file.exists()){
             RequestFile requestFile = new RequestFile(user, filePath, RequestType.DOWNLOAD, fileName);
-            ServerFTP.getRequestDispatcher().addRequest(requestFile);
-            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, ServerFTP.getPort(), RequestType.DOWNLOAD, ServerFTP.getIp(), command.getArg(2)));
+            commandExecutor.getServerFTP().getRequestDispatcher().addRequest(requestFile);
+            clientThread.sendResponse(new Transfer(requestFile.getUniqueID(), fileName, commandExecutor.getServerFTP().getPort(), RequestType.DOWNLOAD, commandExecutor.getServerFTP().getIp(), command.getArg(2)));
             return CommandAction.SUCCESS;
         }
         

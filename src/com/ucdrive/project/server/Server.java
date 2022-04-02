@@ -5,10 +5,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.ucdrive.project.server.client.commands.CommandExecutor;
+import com.ucdrive.project.server.client.commands.CommandHandler;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class Server {
@@ -64,8 +67,17 @@ public class Server {
 
         FileDispatcher fileDispatcher = serverUDP.getSynchronizedThread().getFileDispatcher();
 
-        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher, this);
         ServerFTP serverFTP = new ServerFTP(0, this,10, fileDispatcher);
+        CommandExecutor commandExecutor;
+        try {
+            commandExecutor = new CommandExecutor(fileDispatcher, this, serverFTP);
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            return;
+        }
+        CommandHandler.commandExecutor = commandExecutor;
+
+        ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, commandExecutor, 10, this.storagePath, fileDispatcher, this);
         serverTCP.start();
         serverFTP.start();
         try {

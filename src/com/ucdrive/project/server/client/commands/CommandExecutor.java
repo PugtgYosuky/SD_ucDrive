@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ucdrive.project.server.Server;
+import com.ucdrive.project.server.ServerFTP;
 import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class CommandExecutor {
@@ -22,6 +23,7 @@ public class CommandExecutor {
     private Set<CommandDescription> commandDescriptions;
     private FileDispatcher fileDispatcher;
     private Server server;
+    private ServerFTP serverFTP;
 
     /**
      * Get all the classes in a package
@@ -51,10 +53,11 @@ public class CommandExecutor {
     }
 
     // Initializing the command executor.
-    public CommandExecutor(FileDispatcher fileDispatcher, Server server) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public CommandExecutor(FileDispatcher fileDispatcher, Server server, ServerFTP serverFTP) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         this.commands = new HashMap<>();
         this.fileDispatcher = fileDispatcher;
         this.server = server;
+        this.serverFTP = serverFTP;
         this.commandDescriptions = new TreeSet<>(Comparator.comparing(CommandDescription::prefix));
 
         for(Class<?> c : getPackageClasses("com.ucdrive.project.server.client.commands.list")) {
@@ -73,6 +76,10 @@ public class CommandExecutor {
                 });
             }
         }
+    }
+
+    public ServerFTP getServerFTP() {
+        return serverFTP;
     }
 
     public FileDispatcher getFileDispatcher() {
