@@ -10,11 +10,16 @@ public class ReadThread extends Thread {
     private ObjectInputStream inputStream;
     private ResponseHandler handler;
 
+    // This is the constructor of the ReadThread class. It takes two parameters: an ObjectInputStream
+    // and a ResponseHandler.
     public ReadThread(ObjectInputStream inputStream, ResponseHandler handler) {
         this.inputStream = inputStream;
         this.handler = handler;
     }
 
+    /**
+     * Reads messages from the input stream and executes the appropriate handler
+     */
     public void readMessages() throws IOException {
         try {
             Response res = (Response) inputStream.readObject();
@@ -24,6 +29,9 @@ public class ReadThread extends Thread {
         }
     }
 
+    /**
+     * Read messages from the socket and put them into the queue.
+     */
     @Override
     public void run() {
         while(true) {

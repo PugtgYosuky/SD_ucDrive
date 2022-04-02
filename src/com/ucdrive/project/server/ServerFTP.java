@@ -13,15 +13,18 @@ import com.ucdrive.project.server.ftp.sync.FileDispatcher;
 
 public class ServerFTP extends Thread{
 
+    private final int BACKLOG = 100;
     private static int port;
     private static InetAddress ip;
     private int serverPort;
     private static RequestDispatcher requests;
     private ThreadPoolExecutor pool;
     private FileDispatcher fileDispatcher;
+    private Server server;
     
-    public ServerFTP(int serverPort, int maxThreads, FileDispatcher fileDispatcher) {
+    public ServerFTP(int serverPort, Server server, int maxThreads, FileDispatcher fileDispatcher) {
         this.serverPort = serverPort;
+        this.server = server;
         if(requests == null)
             requests = new RequestDispatcher();
         this.pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
@@ -64,7 +67,7 @@ public class ServerFTP extends Thread{
     
     @Override
     public void run() {
-        try (ServerSocket server = new ServerSocket(serverPort)) {
+        try (ServerSocket server = new ServerSocket(serverPort, BACKLOG, this.server.getMyIp())) {
             ip = server.getInetAddress();
             port = server.getLocalPort();
             acceptRequests(server);

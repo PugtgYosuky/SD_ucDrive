@@ -65,7 +65,7 @@ public class Server {
         FileDispatcher fileDispatcher = serverUDP.getSynchronizedThread().getFileDispatcher();
 
         ServerTCP serverTCP = new ServerTCP(this.myTCPPort, this.myIp, 10, this.storagePath, fileDispatcher, this);
-        ServerFTP serverFTP = new ServerFTP(0, 10, fileDispatcher);
+        ServerFTP serverFTP = new ServerFTP(0, this,10, fileDispatcher);
         serverTCP.start();
         serverFTP.start();
         try {

@@ -77,6 +77,7 @@ public class TransferThread extends Thread {
             inputStream.close();
 
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Transfer handler lost connection");
             return false;
         }
