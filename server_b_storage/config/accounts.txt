@@ -1,4 +1,0 @@
-username1;123;DEI;UC;address;919999999;1531512;02/00/2008;/home
-username2;1234;DEI;UC;address;919999999;1531512;02/00/2008;/home
-username3;password3;DEI;UC;address;919999999;1531512;02/00/2008;/home
-username4;password4;DEI;UC;address;919999999;1531512;02/00/2008;/home
