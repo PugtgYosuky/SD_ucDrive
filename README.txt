@@ -39,4 +39,3 @@ Para utilizar este exemplo, o ficheiro ucDrive.jar deve ser colocado nessa pasta
         java -jar ucDrive.jar config_a.txt
     Para o servidor B:
         java -jar ucDrive.jar config_b.txt
-        

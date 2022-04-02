@@ -8,19 +8,12 @@
 
 package com.ucdrive.project.client.commands;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import com.ucdrive.project.client.Client;
 
@@ -35,31 +28,51 @@ public class CommandExecutor {
     private Client client;
     private DataOutputStream outputStream;
 
-    /**
-     * Given a package name, return a set of all the classes in that package
-     * 
-     * @param packageName The name of the package to search for classes.
-     * @return A set of classes.
-     */
-    public Set<Class<?>> getPackageClasses(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(packageName.replaceAll("[.]", "/"));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        return reader.lines().filter(line -> line.endsWith(".class")).map(line -> getClass(line, packageName)).collect(Collectors.toSet());
-    }
+    // Function from https://stackoverflow.com/questions/28678026/how-can-i-get-all-class-files-in-a-specific-package-in-java
+    public static List<Class<?>> getClassesInPackage(String packageName) {
+        String path = packageName.replaceAll("[.]", "/");
+        List<Class<?>> classes = new ArrayList<>();
+        String[] classPathEntries = System.getProperty("java.class.path").split(
+                System.getProperty("path.separator")
+        );
 
-    /**
-     * Given a class name and a package name, return the class object
-     * 
-     * @param className The name of the class to load.
-     * @param packageName The name of the package where the class is located.
-     * @return The class object.
-     */
-    public Class<?> getClass(String className, String packageName) {
-        try {
-            return Class.forName(packageName + "." + className.substring(0, className.lastIndexOf(".")));
-        } catch(Exception exc) {
-            return null;
+        String name;
+        for (String classpathEntry : classPathEntries) {
+            if (classpathEntry.endsWith(".jar")) {
+                File jar = new File(classpathEntry);
+                try {
+                    JarInputStream is = new JarInputStream(new FileInputStream(jar));
+                    JarEntry entry;
+                    while((entry = is.getNextJarEntry()) != null) {
+                        name = entry.getName();
+                        if (name.endsWith(".class")) {
+                            if (name.contains(path) && name.endsWith(".class")) {
+                                String classPath = name.substring(0, entry.getName().length() - 6);
+                                classPath = classPath.replaceAll("[\\|/]", ".");
+                                classes.add(Class.forName(classPath));
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                    // Silence is gold
+                }
+            } else {
+                try {
+                    File base = new File(classpathEntry + File.separatorChar + path);
+                    for (File file : base.listFiles()) {
+                        name = file.getName();
+                        if (name.endsWith(".class")) {
+                            name = name.substring(0, name.length() - 6);
+                            classes.add(Class.forName(packageName + "." + name));
+                        }
+                    }
+                } catch (Exception ex) {
+                    // Silence is gold
+                }
+            }
         }
+
+        return classes;
     }
 
     public CommandExecutor(Client client, DataOutputStream outputStream) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
@@ -68,7 +81,7 @@ public class CommandExecutor {
         this.client = client;
         this.outputStream = outputStream;
         // Get all the classes in the given package
-        for(Class<?> c : getPackageClasses("com.ucdrive.project.client.commands.list")) {
+        for(Class<?> c : getClassesInPackage("com.ucdrive.project.client.commands.list")) {
             // Check if the CommandDescription annotation is present in the class
             if(c.isAnnotationPresent(CommandDescription.class)) {
                 // If the annotation is present, we will get the comment description
