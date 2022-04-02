@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server.storage;
 
 import java.io.BufferedReader;

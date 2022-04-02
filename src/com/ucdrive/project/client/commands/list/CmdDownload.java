@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.client.commands.list;
 
 import java.io.IOException;
@@ -24,7 +32,7 @@ public class CmdDownload extends CommandHandler {
         // It checks if the command has the right number of arguments. If it doesn't, it prints an
         // error message and returns the `CommandAction.INVALID_USAGE` value.
         if(command.getArgsLength() < 2) {
-            System.out.println("Invalid usage. Use: upload <file name>");
+            System.out.println("Invalid usage. Use: download <file name>");
             return CommandAction.INVALID_USAGE;
         }
         

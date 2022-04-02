@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.client.commands.list;
 
 import java.io.File;
@@ -28,7 +36,7 @@ public class CmdChangeDirectory extends CommandHandler {
     public CommandAction parse(Command command) throws IOException {
         Client client = command.getClient();
         if(command.getArgsLength() < 2){
-            System.out.println("Invalid usage. Use: cd <dir name>");
+            System.out.println("Invalid usage. Use: local-cd <dir name>");
             return CommandAction.INVALID_USAGE;
         }
 

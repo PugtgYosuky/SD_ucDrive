@@ -1,12 +1,17 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server.ftp;
 
 import java.util.UUID;
 
 import com.ucdrive.project.server.client.User;
 
-/**
- * A RequestFile is a file that a user has requested to be uploaded/downloaded to/from the server
- */
 /**
  * A RequestFile is a file that a user has requested to be uploaded/downloaded to/from the server
  */

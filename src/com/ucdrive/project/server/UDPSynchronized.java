@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server;
 
 import java.io.ByteArrayInputStream;
@@ -197,7 +205,6 @@ public class UDPSynchronized extends Thread{
                     try {
                         Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -209,7 +216,6 @@ public class UDPSynchronized extends Thread{
                     try {
                         Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -221,7 +227,6 @@ public class UDPSynchronized extends Thread{
                     try {
                         Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -277,7 +282,6 @@ public class UDPSynchronized extends Thread{
         // A server that receives files from clients and sends them to the clients.
         while(true){
             if(server.getPrimaryServer()){
-                //System.out.println("File dispacher size: " + fileDispatcher.getSize());
                 synchronized(this) {
                     while(fileDispatcher.getSize() == 0) {
                         try {

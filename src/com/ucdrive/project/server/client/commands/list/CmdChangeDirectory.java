@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server.client.commands.list;
 
 import java.io.File;
@@ -32,7 +40,7 @@ public class CmdChangeDirectory extends CommandHandler{
         // This is checking if the user has entered a directory name. If they haven't, then they have
         // not entered the correct number of arguments.
         if(command.getArgsLength() < 2){
-            client.sendMessage("Invalid usage. Use: cd <dir name>");
+            client.sendMessage("Invalid usage. Use: server-cd <dir name>");
             return CommandAction.INVALID_USAGE;
         }
 

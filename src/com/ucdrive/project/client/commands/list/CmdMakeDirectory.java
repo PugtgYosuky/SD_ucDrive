@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.client.commands.list;
 
 import java.io.File;
@@ -27,7 +35,7 @@ public class CmdMakeDirectory extends CommandHandler {
         // it will print out an error message and return an invalid usage.
         Client client = command.getClient();
         if(command.getArgsLength() < 2) {
-            System.out.println("Invalid usage. Use: mkdir <dir name>");
+            System.out.println("Invalid usage. Use: local-mkdir <dir name>");
             return CommandAction.INVALID_USAGE;
         }
 

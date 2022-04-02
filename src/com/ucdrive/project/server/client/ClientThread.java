@@ -1,3 +1,11 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server.client;
 
 import java.io.*;
@@ -55,8 +63,7 @@ public class ClientThread {
      */
     public boolean authenticate() throws IOException {
         String s;
-        //sendMessage("Insert username: ");
-        s = inputStream.readUTF();
+        s = inputStream.readUTF(); // username
 
         client = userData.findUser(s);
 
@@ -73,8 +80,7 @@ public class ClientThread {
             return false;
         }
 
-        //sendMessage("Password: ");
-        s = inputStream.readUTF();
+        s = inputStream.readUTF(); // password
 
         // It checks if the password is correct. If it is, it sends a message to the client and
         // sets the isConnected flag to true.
@@ -125,7 +131,6 @@ public class ClientThread {
 				// It reads a command from the client, executes it, and sends a response back to the client.
                 String request = inputStream.readUTF();
                 CommandAction action = commandExecutor.execute(new Command(this, request));
-                System.out.println("Action: " + action);
                 // Closing the connection.
                 if(action == CommandAction.CLOSE_CONNECTION)
                     break;

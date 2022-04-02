@@ -1,7 +1,13 @@
+/*
+    UCDrive
+
+    Alunos:
+        Joana Simoes, 2019217013
+        Samuel Carinhas, 2019217199
+*/
+
 package com.ucdrive.project.server.client.commands;
 
-
-// A Java enum.
 public enum CommandAction {
 
 
